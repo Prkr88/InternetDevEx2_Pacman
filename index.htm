@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Bazoret Man</title>
+
+    <META NAME = "keywords" CONTENT = "pacman, game, fun">
+
+    <META NAME = "description" CONTENT = "Hello and welcome to Bazoret Man Game.">
+
+    <link rel="shortcut icon" href="images\\icon2.jpeg">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+    <link rel="stylesheet" type="text/css" href="style.css" />
+
+    <link rel='stylesheet' id='mlestrnge-googlefont-css'  href='http://fonts.googleapis.com/css?family=Varela+Round' type='text/css' media='all' />
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+
+    <!-- Bootstrap core CSS additions -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+</head>
+
+<body>
+
+    <div class="container_header fixed-top">
+        <nav>
+            <ul>                      
+                <li> <t>Bazoret Man Game</t> </li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="container_menu fixed-top">
+        <nav>
+            <ul>                      
+                <li> <p id="btn_welcome">Welcome</p> </li>
+                <li> <p id="btn_login">Login</p> </li>
+                <li> <p id="btn_register">Register</p> </li>
+                <li> <p id="btn_about">About</p> </li> 
+            </ul>
+        </nav> 
+    </div>
+
+    <script>
+
+        $(document).ready(function() {
+
+            var list_users = [];
+            var list_msgs = [];
+            var list_keys = [4];
+            var msg = "";
+
+            var modal = document.getElementById('wnd_about');
+            var modalBtn = document.getElementById('btn_about');
+            var closeBtn = document.getElementsByClassName('closeBtn')[0];
+
+            modalBtn.addEventListener('click', show_about);
+            closeBtn.addEventListener('click', hide_about);
+            window.addEventListener('click', clickOutside_about);
+
+            var modal_settings = document.getElementById('wnd_settings');
+            var modalSettingsBtn = document.getElementById('btn_submit_login');
+            var closeSettingsBtn = document.getElementsByClassName('closeSettingsBtn')[0];
+
+            modalSettingsBtn.addEventListener('click', show_settings);
+            closeSettingsBtn.addEventListener('click', hide_settings);
+            window.addEventListener('click', clickOutside_settings);
+
+            init_users();
+            init_login_alerts();
+            init_reg_alerts();
+            hide_windows();
+            show_welcome();
+
+            /* Welcome Screen */
+            $("#btn_welcome, #btn_cancel_reg, #btn_cancel_login").click(function() {
+                show_welcome();
+            });
+
+            /* Login Screen */
+            $("#btn_login, #btn_login_welcome, #btn_login_from_about").click(function() {
+                show_login();
+            });
+
+            /* Register Screen */
+            $("#btn_register, #btn_register2").click(function() {
+                $( "#alerts" ).empty();
+                show_register();
+            });
+
+            /* About Screen */
+            $("#btn_about").click(function() {
+                show_about();
+            });
+
+            $("#btn_setplay").click(function() {
+
+                var key_up = document.getElementById('btn_keyup');
+                var key_down = document.getElementById('btn_keydown');
+                var key_left = document.getElementById('btn_keyleft');
+                var key_right = document.getElementById('btn_keyright');
+
+                var amount_balls = document.getElementById('btn_amountBalls').value;
+                var color_balls = document.getElementById('btn_colorBalls').value;
+                var amount_time = document.getElementById('btn_amountTime').value;
+                var amount_ghosts = document.getElementById('btn_amountGhosts').value;
+
+                list_keys[0] = key_up.value.substring(0, 1).charCodeAt(0);
+                list_keys[1] = key_down.value.substring(0, 1).charCodeAt(0);
+                list_keys[2] = key_left.value.substring(0, 1).charCodeAt(0);
+                list_keys[3] = key_right.value.substring(0, 1).charCodeAt(0);
+                show_game()
+            });
+
+            $("#btn_random").click(function() {
+                set_default_keys();
+                show_game()
+            });
+
+
+            function hide_windows() {
+                $('#wnd_welcome').hide();
+                $('#wnd_login').hide();
+                $('#wnd_register').hide();
+                $('#wnd_play').hide();
+                $("#wnd_about").hide();
+                $("#wnd_settings").hide();
+            }
+
+            function set_default_keys() {
+                list_keys[0] = 38; // up
+                list_keys[1] = 40; // down
+                list_keys[2] = 37; // left
+                list_keys[3] = 30; // right
+            }
+
+            function init_users() {
+                var fname 			= 'Bob';
+                var lname 			= 'Smith';
+                var uname 			= 'a';
+                var pass      		= 'a';
+                var email 			= 'bgu_tester@post.bgu.ac.il';
+                var bday 			= '6/6/1966';
+                var new_user = {fname, lname, uname, pass, email, bday};
+                list_users.push(new_user);
+            }
+
+            function hide_popups() {
+                $("#popup_login").hide();
+                $("#popup_login_uname").hide();
+                $("#popup_login_pass").hide();
+                $("#popup_reg_fname").hide();
+                $("#popup_reg_lname").hide();
+                $("#popup_reg_uname").hide();
+                $("#popup_reg_pass").hide();
+                $("#popup_reg_email").hide();
+                $("#popup_reg_bday").hide();
+            }
+
+            function init_login_alerts() {
+                $("#alert_login").empty();
+                $("#alert_login_uname").empty();
+                $("#alert_login_pass").empty();
+            }
+
+            function init_reg_alerts() {
+                $("#alert_reg_fname").empty();
+                $("#alert_reg_lname").empty();
+                $("#alert_reg_uname").empty();
+                $("#alert_reg_pass").empty();
+                $("#alert_reg_email").empty();
+                $("#alert_reg_bday").empty();
+            }
+
+            function show_welcome() {
+                hide_windows();
+                $("#wnd_welcome").show();
+            }
+
+            function show_login() {
+                hide_windows();
+                $('#wnd_login').show();
+                hide_popups();
+            }
+
+            function show_register() {
+                hide_windows();
+                $("#wnd_register").show();
+                hide_popups();
+            }
+
+            function show_about() {
+                modal.style.display = 'block';
+            }
+
+            function hide_about() {
+                modal.style.display = 'none';
+            }
+
+            function clickOutside_about(e) {
+                if (e.target == modal)
+                    modal.style.display = 'none';
+            }
+
+            function show_settings() {
+                modal_settings.style.display = 'block';
+            }
+
+            function hide_settings() {
+                modal_settings.style.display = 'none';
+            }
+
+            function clickOutside_settings(e) {
+                if (e.target == modal_settings)
+                    modal_settings.style.display = 'none';
+            }
+
+            function show_game_and_settings() {
+                hide_windows();
+                $("#wnd_play").show();
+                $("#wnd_settings").show();
+            }
+
+            function show_game() {
+                $("#wnd_settings").hide();
+            }
+
+            $("#btn_submit_login").click(function() {
+                         
+                var resume          = true;
+                var uname 			= $('#login_username').val();
+                var pass      		= $('#login_password').val();
+                msg                 = "";
+
+                init_login_alerts();
+                hide_popups();
+                show_game_and_settings()
+
+                /* validation start */
+/*
+                if (uname === 'a' && pass === 'a')
+                    show_game_and_settings()
+
+                if(!valid_user(uname, pass)) {
+                    resume = false;
+                } // (1) uname
+
+                if(!valid_pass(pass)) {
+                    resume = false;
+                } // (2) pass
+                if (!resume) { // if error
+                    var a = 0;
+                }
+                else
+                    show_game_and_settings();
+*/
+	
+            }); // submit_login onClick end
+
+            $("#btn_submit_reg").click(function() {
+
+                var resume          = true;
+                var fname 			= $('#reg_fname').val();
+                var lname 			= $('#reg_lname').val();
+                var uname 			= $('#reg_username').val();
+                var pass      		= $('#reg_password').val();
+                var email 			= $('#reg_email').val();
+                var bday 			= $('#reg_bday').val();
+
+                init_reg_alerts();
+                msg = "";
+                hide_popups();
+
+                /* validation start */
+                if(!valid_name(fname)) {
+                    $("#popup_reg_fname").show();
+                    $( "#alert_reg_fname" ).html(msg).show();
+                    resume = false;
+                } // (1) fname
+
+                if(!valid_name(lname)) {
+                    $("#popup_reg_lname").show();
+                    $( "#alert_reg_lname" ).html(msg).show();
+                    resume = false;
+                } // (2) lname
+
+                if(!valid_uname(uname)) {
+                    $("#popup_reg_uname").show();
+                    $( "#alert_reg_uname" ).html(msg).show();
+                    resume = false;
+                } // (3) uname
+
+                if(!valid_pass(pass)) {
+                    $("#popup_reg_pass").show();
+                    $( "#alert_reg_pass" ).html(msg).show();
+                    resume = false;
+                } // (4) pass
+
+                if(!valid_email(email)) {
+                    $("#popup_reg_email").show();
+                    $( "#alert_reg_email" ).html(msg).show();
+                    resume = false;
+                } // (5) email
+
+                if(!valid_bday(bday)) {
+                    $("#popup_reg_bday").show();
+                    $( "#alert_reg_bday" ).html(msg).show();
+                    resume = false;
+                } // (6) bday
+
+                if (!resume) { // if error
+                    var a = 0;
+                }
+                else {
+                    var new_user = {fname, lname, uname, pass, email, bday};
+                    list_users.push(new_user);
+                    show_login();
+                }
+
+        }); // submit_reg onClick end
+
+            function valid_name(name) {
+                if (name === ''){
+                    msg = "Please enter your name";
+                    return false;
+                }
+                else {
+                    var loc = "th";
+                    for (var i=0; i<name.length; i++){
+                        if (!name.charAt(i).match(/[a-z]/i)) {
+                            if (i===0)
+                                loc = "st";
+                            else if (i===1)
+                                loc = "nd";
+                            else if (i===2)
+                                loc = "rd";
+                            msg = "Oops, name contains numbers. Your " +i +loc +" letter is a number.";
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+
+            function valid_user(uname, pass) {
+                var user_correct = false;
+                var pass_correct = false;
+                for (var i=0; i < list_users.length; i++)
+                    if (list_users[i].uname === uname) {
+                        user_correct = true;
+                        if (list_users[i].uname === pass)
+                            pass_correct = true;
+                        if (user_correct && pass_correct)
+                            return true;
+                        if (!pass_correct) {
+                            msg = "Incorrect Password.";
+                            $("#popup_login_pass").show();
+                            $( "#alert_login_pass" ).html(msg).show();
+                            return false;
+                        }
+                    }
+                msg = "User not found, Please create a free account! (Go to the 'Register' tab on top)";
+                $("#popup_login").show();
+                $( "#alert_login" ).html(msg).show();
+
+                return false;
+            }
+
+            function valid_uname(uname) { // uname is available
+                if (uname === '') {
+                    msg = "Please fill in your Username, please try again.";
+                    return false;
+                }
+                for (var i=0; i < list_users.length; i++)
+                    if (list_users[i].uname === uname) {
+                        msg = "Username taken, please try again.";
+                        return false;
+                    }
+                return true;
+            }
+
+            function valid_pass(pass) {
+                if (pass.length < 8 || pass === '') {
+                    msg = "Password needs to have at least 8 characters.";
+                    return false;
+                }
+                var countNum = 0;
+                var countChar = 0;
+                for (var i = 0; i < pass.length; i++){
+                    if(pass.charAt(i) >= '0' && pass.charAt(i) <= '9')
+                        countNum++;
+                    else if (pass.charAt(i).match(/[a-z]/i)){
+                        countChar++;
+                    }
+                    else {
+                        msg = "Password may only contain numbers and 'abc' letters.";
+                        return false;
+                    }
+                }
+                if (countChar === 0) {
+                    msg = "Password not valid, must contain letters.";
+                    return false;
+                }
+                if (countNum === 0) {
+                    msg = "Password not valid, must contain numbers.";
+                    return false;
+                }
+                return true;
+            }
+
+            function valid_email(email) {
+                if (email==='') {
+                    msg = "Please fill in your Email.";
+                    return false;
+                }
+                else {
+                    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                    if (email.match(re))
+                        return true;
+                    else {
+                        msg = "Email not in the correct format, please try again."
+                        return false;
+                    }
+                }
+            }
+
+            function valid_bday(bday) {
+                if (bday === '') {
+                msg = "Please fill out your bday.";
+                return false;
+                }
+                else
+                    return true;
+            }
+
+        });  
+
+    </script>
+
+    <div class="container_footer fixed-bottom">
+        <nav>
+            <ul>                      
+                <li> Contact </li>
+            </ul>
+        </nav>
+    </div>
+
+    <div id="wnd_welcome" class="container_main">
+        <img src="images\\img_welcome.png" class="bg_image">  
+        <p class="golden-base golden3">WELCOME</p>   
+        <!-- <h1 class="title">Welcome</h1> -->
+        <div class="small_left">
+            <!-- <p class="lead" id="welcome_text"><span style="color:white;font-weight:bold">To play, please login.</span><br /> </p>           -->
+            <button id="btn_login_welcome" type="button" class="btn-circle lg bg">Login</button>
+        </div>
+        <div class="small_right">
+            <!-- <p class="lead" id="welcome_text"><br /><span style="color:white;font-weight:bold">If you don't have an account, register now!</span> <br /> </p> -->
+            <button id="btn_register2" type="button" class="btn-circle lg bg">Register</button>
+        </div>
+    </div>
+
+    <div id="wnd_login" class="container_login">
+        <h1 class="display-4"><span style="color:white">Login</span></h1>
+        <p class="lead"><span style="color:white">Enter your username and password to play!</span></br></br></p>
+        <form class="form-signin">
+            <div class="col-md-6">
+                <div class="popup" id="popup_login"> <span class="popuptext" id="alert_login"></span> </div>
+                <input type="text" id="login_username" class="form-control" placeholder="Username" required autofocus>
+                </br></br>
+                <div class="popup" id="popup_login_pass"> <span class="popuptext" id="alert_login_pass"></span> </div>
+                <label for="login_password" class="sr-only">Password</label>
+                <input type="password" id="login_password" class="form-control" placeholder="Password" required autofocus>
+            </div>
+            </br>
+        </form>
+        <button id="btn_submit_login" type="button" class="btn btn-circle lg bg pos-login-btn-play">Play</button>
+        <button id="btn_cancel_login" type="button" class="btn btn-circle lg bg pos-login-btn-cancel">Cancel</button>
+    </div>
+
+    <div id="wnd_register" class="container_reg">
+        <div class="w">
+            <h1 class="display-4"><span style="color:white">Registration</span></h1>
+            <p class="lead"><span style="color:white">Please fill all your details!</br></span></p>
+            <form class="needs-validation" novalidate>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="popup" id="popup_reg_fname"> <span class="popuptext" id="alert_reg_fname"></span> </div>
+                        <label for="reg_fname">First name</label>
+                        <input type="text" class="form-control" id="reg_fname" placeholder="First Name" value="" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="popup" id="popup_reg_lname"> <span class="popuptext" id="alert_reg_lname"></span> </div>
+                        <label for="reg_lname">Last name</label>
+                        <input type="text" class="form-control" id="reg_lname" placeholder="Last Name" value="" required>
+                    </div>
+                </div> <!--end of row #1 -->
+                </br></br>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="reg_username">Username</label>
+                        <div class="popup" id="popup_reg_uname"> <span class="popuptext" id="alert_reg_uname"></span> </div>
+                        <input type="text" class="form-control" id="reg_username" placeholder="Username" required>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="reg_password">Password</label>
+                        <div class="popup" id="popup_reg_pass"> <span class="popuptext" id="alert_reg_pass"></span> </div>
+                        <input type="password" class="form-control" id="reg_password" placeholder="Password" required>
+                    </div>
+                </div> <!--end of row #2 --> 
+                </br></br>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="reg_email">Email</label>
+                        <div class="popup" id="popup_reg_email"> <span class="popuptext" id="alert_reg_email"></span> </div>
+                        <input type="email" class="form-control" id="reg_email" placeholder="YourEmail@Domain.com" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="reg_bday">Birthday</label>
+                        <div class="popup" id="popup_reg_bday"> <span class="popuptext" id="alert_reg_bday"></span> </div>
+                        <input type="date" class="form-control" id="reg_bday" placeholder="Birth Date">
+                    </div>
+                </br></br>
+                </div> <!--end of row #3 --> 
+            </br></br>
+            </form>
+        </div>
+        <button id="btn_submit_reg" type="button" class="btn btn-circle lg bg pos-login-btn-play">Submit</button>
+        <button id="btn_cancel_reg" type="button" class="btn btn-circle lg bg pos-login-btn-cancel">Cancel</button>
+        </br></br>
+    </div>
+
+    <div id="wnd_about" class="modal">
+        <div class="modal-content1">
+            <div class="modal-header1">
+                <span class="closeBtn">&times;</span>
+                <h2>About</h2>
+            </div>
+            <div class="modal-body1">
+                <p>Matan Parker & Edo Lior</p>
+            </div>
+            <div class="modal-footer">
+                <h3>Go on and stary playing!</h3>
+            </div>
+        </div>
+    </div>
+
+    <div id="wnd_settings" class="modal_settings">
+        <div class="modal-content2 w">
+            <div class="modal-header2">
+                <span class="closeSettingsBtn">&times;</span>
+                <h2>Welcome to Settings!</h2>
+            </div>
+            <div class="modal-body2_left">
+                <p>Choose keys got movement:</br></br></br></br></p>
+                <div id = "btn_up" >
+                    <p>Up:</p>
+                    <input type="text" name="upkey" size="5" id="btn_keyup" style="color:black">
+                </div>
+                    <img src="images\\keys2.png" class = "modal-body2_left image_keys" style="color:black">
+                <div id = "btn_down" >
+                    <p>Down:</p>
+                    <input type="text" name="downkey" size="5" id="btn_keydown" style="color:black">
+                </div>
+                <div id = "btn_left" >
+                    <p>Left:</p>
+                    <input type="text" name="leftkey" size="5" id="btn_keyleft" style="color:black">
+                </div>
+                <div id = "btn_right" >
+                    <p>Right:</p>
+                    <input type="text" name="rightkey" size="5" id="btn_keyright" style="color:black">
+                </div>
+            </div>
+            <button id="btn_random" type="button" class="btn btn-circle lg bg pos-settings-btn-random">Random</button>
+            <div class="modal-body2_right">
+                <div class="box-amount-balls">
+                    <p>Choose amount of balls 50-90:</p>
+                    <input type="number" name="quantity" min="50" max="90" id="btn_amountBalls" style="color:black">
+                    </br></br>
+                    <p>Choose the color of the balls:</p>
+                </div>
+                <div class="box-colors">
+                    <select id="btn_colorBalls">
+                        <option> <span style="color:gold">GOLD</span> </option>
+                        <option> <span style="color:silver">SILVER</span> </option>
+                        <option> <span style="color:orange">ORANGE</span> </option>
+                    </select>
+                </div>
+                <div class="box-time">
+                    </br></br>
+                    <p>Choose amount of time (at least 60 seconds):</p>
+                    <input type="number" name="quantity" min="60" max="" id="btn_amountTime" style="color:black">
+                </div>
+                <div class="box-amount-monsters">
+                    </br></br>
+                    <p>Choose amount of ghosts:</p>
+                    <select id="btn_amountGhosts">
+                        <option> 1 </option>
+                        <option> 2 </option>
+                        <option> 3 </option>
+                    </select>
+                </div>
+                <button id="btn_setplay" type="button" class="btn btn-circle lg bg pos-settings-btn-setplay" onclick="Start()">Set&Play</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="wnd_play" class="container_main">
+        SCORE:
+        <input id="lblScore" type="text"/>
+        <br/>
+        TIME:
+        <input id="lblTime" type="text"/>
+        <br/>
+<!--        <iframe src="sounds/mmm.mp3" allow="autoplay" style="display:none" id="iframeAudio">-->
+<!--        </iframe>-->
+<!--        <canvas onload="window.onload" id="canvas" height="660" width="600"></canvas>-->
+        <canvas id="canvas" height="660" width="600"></canvas>
+
+
+        <script type="text/javascript">
+
+            /**************--------------- load images --------------------*****************/
+                //-------------dror right--------------//
+            var d_right1 = new Image();
+            d_right1.src = "images/pacDrorAni_right1.svg";
+            var d_right2 = new Image();
+            d_right2.src = "images/pacDrorAni_right2.svg";
+            var d_right3 = new Image();
+            d_right3.src = "images/pacDrorAni_right3.svg";
+            var d_right4 = new Image();
+            d_right4.src = "images/pacDrorAni_right4.svg";
+            //-------------dror left--------------//
+            var d_left1 = new Image();
+            d_left1.src = "images/pacDrorAni_left1.svg";
+            var d_left2 = new Image();
+            d_left2.src = "images/pacDrorAni_left2.svg";
+            var d_left3 = new Image();
+            d_left3.src = "images/pacDrorAni_left3.svg";
+            var d_left4 = new Image();
+            d_left4.src = "images/pacDrorAni_left4.svg";
+            //-------------dror up--------------//
+            var d_up1 = new Image();
+            d_up1.src = "images/pacDrorAni_up1.svg";
+            var d_up2 = new Image();
+            d_up2.src = "images/pacDrorAni_up2.svg";
+            var d_up3 = new Image();
+            d_up3.src = "images/pacDrorAni_up3.svg";
+            var d_up4 = new Image();
+            d_up4.src = "images/pacDrorAni_up4.svg";
+            //-------------dror down--------------//
+            var d_down1 = new Image();
+            d_down1.src = "images/pacDrorAni_down1.svg";
+            var d_down2 = new Image();
+            d_down2.src = "images/pacDrorAni_down2.svg";
+            var d_down3 = new Image();
+            d_down3.src = "images/pacDrorAni_down3.svg";
+            var d_down4 = new Image();
+            d_down4.src = "images/pacDrorAni_down4.svg";
+            //-------------Haim Ghosts--------------//
+            var g_1 = new Image();
+            g_1.src = "images/Haim_1.svg";
+            var g_2 = new Image();
+            g_2.src = "images/Haim_2.svg";
+            var g_3 = new Image();
+            g_3.src = "images/Haim_3.svg";
+            //-------------init animation arrays--------------//
+            var DrorRight = [d_right1, d_right2, d_right3, d_right4];
+            var DrorLeft = [d_left1, d_left2, d_left3, d_left4];
+            var DrorUp = [d_up1, d_up2, d_up3, d_up4];
+            var DrorDown = [d_down1, d_down2, d_down3, d_down4];
+
+            //-------------Game environment variable --------------//
+            var direction;
+            var wall = new Image();
+            wall.src = "images/wall.svg";
+            var floor = new Image();
+            floor.src = "images/floor.svg";
+            var food_simple = new Image();
+            food_simple.src = "images/food_simple.svg";
+            var diamond = new Image();
+            diamond.src = "images/diamond.svg";
+            var food_special = new Image();
+            food_special.src = "images/food_special.svg";
+            var skullFig = new Image();
+            skullFig.src = "images/skull.svg";
+            var victoryFig = new Image();
+            victoryFig.src = "images/victory.svg";
+            var gameOverFig = new Image();
+            gameOverFig.src = "images/gameOver.svg";
+            var skull = new Object();
+            skull.x = 0;
+            skull.y = 0;
+            var skullSpeed = 0;
+            var skullApearanceTime = 0;
+            var skullVisible = 0;
+            var animationSpeed = 0;
+            var animationCounter = 0;
+
+            //Game sounds
+            var killed_sound = new Sound("sounds/killed.mp3");
+            var backgroundMusic = new Sound("sounds/BackgroundMusic.mp3");
+            var gameOverSound = new Sound("sounds/gameOver.mp3");
+            var catchedTheSkull = new Sound("sounds/sharvit.mp3");
+            var gameCompleteSound = new Sound("sounds/gameFinished2.mp3");
+            var eatHatzir = new Sound("sounds/eatHatzir.mp3");
+            var tetet = new Sound("sounds/Tetet.mp3");
+            var firstTap = 1;
+            var drorMotionIndex = 2;
+            var drorSpeedController = 0;
+            var drorSpeed = 2;
+            var drorToDraw;
+            var gameOverIndication = 0;
+            var context = canvas.getContext("2d");
+            var shape = new Object();
+            var board;
+            var foodMap;
+            var tmpBoard;
+            var score = 0;
+            var pacman_remain = 3;
+            var pac_color;
+            var start_time;
+            var time_elapsed;
+            var interval;
+            var SIZE = 30;
+            var BOARD_WIDTH = 19;
+            var BOARD_HEIGHT = 22;
+            var ghost_1 = 5;
+            var ghost_1_path = new Array();
+            var ghost_1_loc = [10, 8];
+            var ghost_1_prevValue = 0;
+            var ghost_2 = 6;
+            var ghost_2_path = new Array();
+            var ghost_2_loc = [10, 9];
+            var ghost_2_prevValue = 0;
+            var ghost_3 = 7;
+            var ghost_3_path = new Array();
+            var ghost_3_loc = [10, 10];
+            var ghost_3_prevValue = 0;
+            var pacmanMoved = 1;
+            var pacmanCurrentLoc = [16, 9];
+            var ghostMoveCounter = 0;
+            var ghostArray = [ghost_1, ghost_2, ghost_3];
+            var ghostNum = 3;  // number of ghosts in game
+            var gameCompleted = 0;
+            foodCounter = 186;
+
+
+            var ghostScanboard_init = board = [
+                [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+                [4, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 4],
+                [4, 4, 4, 4, 0, 4, 4, 4, 0, 4, 0, 4, 4, 4, 0, 4, 4, 4, 4],
+                [4, 0, 4, 4, 0, 4, 4, 4, 0, 4, 0, 4, 4, 4, 0, 4, 4, 0, 4],
+                [4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4],
+                [4, 0, 4, 4, 0, 4, 0, 4, 4, 4, 4, 4, 0, 4, 0, 4, 4, 0, 4],
+                [4, 0, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0, 0, 4],
+                [4, 4, 4, 4, 0, 4, 4, 4, 0, 4, 0, 4, 4, 4, 0, 4, 4, 4, 4],
+                [0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0],
+                [4, 4, 4, 4, 0, 4, 0, 4, 4, 0, 4, 4, 0, 4, 0, 4, 4, 4, 4],
+                [0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0],
+                [4, 4, 4, 4, 0, 4, 0, 4, 4, 4, 4, 4, 0, 4, 0, 4, 4, 4, 4],
+                [0, 0, 0, 4, 0, 4, 0, 0, 0, 0, 0, 0, 0, 4, 0, 4, 0, 0, 0],
+                [4, 4, 4, 4, 0, 4, 0, 4, 4, 4, 4, 4, 0, 4, 0, 4, 4, 4, 4],
+                [4, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 4],
+                [4, 0, 4, 4, 0, 4, 4, 4, 0, 4, 0, 4, 4, 4, 0, 4, 4, 0, 4],
+                [4, 4, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 4, 4],
+                [4, 4, 0, 4, 0, 4, 0, 4, 4, 4, 4, 4, 0, 4, 0, 4, 0, 4, 4],
+                [4, 0, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0, 0, 4],
+                [4, 0, 4, 4, 4, 4, 4, 4, 0, 4, 0, 4, 4, 4, 4, 4, 4, 0, 4],
+                [4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4],
+                [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
+            ];
+
+            var btn_setplay = document.getElementById("btn_setplay");
+            btn_setplay.onclick = function () {
+                backgroundMusic.play();
+                Start();
+            };
+
+            function Start() {
+                // board = new Array();
+                score = 0;
+                pac_color = "yellow";
+                var cnt = 100;
+                start_time = new Date();
+                board = [
+                    [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+                    [4, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 4],
+                    [4, 4, 4, 4, 1, 4, 4, 4, 1, 4, 1, 4, 4, 4, 1, 4, 4, 4, 4],
+                    [4, 1, 4, 4, 1, 4, 4, 4, 1, 4, 1, 4, 4, 4, 1, 4, 4, 1, 4],
+                    [4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4],
+                    [4, 1, 4, 4, 1, 4, 1, 4, 4, 4, 4, 4, 1, 4, 1, 4, 4, 1, 4],
+                    [4, 1, 1, 1, 1, 4, 1, 1, 1, 4, 1, 1, 1, 4, 1, 1, 1, 1, 4],
+                    [4, 4, 4, 4, 1, 4, 4, 4, 1, 4, 1, 4, 4, 4, 1, 4, 4, 4, 4],
+                    [0, 0, 0, 4, 1, 4, 1, 1, 1, 1, 1, 1, 1, 4, 1, 4, 0, 0, 0],
+                    [4, 4, 4, 4, 1, 4, 1, 4, 4, 0, 4, 4, 1, 4, 1, 4, 4, 4, 4],
+                    [1, 1, 1, 1, 1, 1, 1, 4, 0, 0, 0, 4, 1, 1, 1, 1, 1, 1, 1],
+                    [4, 4, 4, 4, 1, 4, 1, 4, 4, 4, 4, 4, 1, 4, 1, 4, 4, 4, 4],
+                    [0, 0, 0, 4, 1, 4, 1, 1, 1, 1, 1, 1, 1, 4, 1, 4, 0, 0, 0],
+                    [4, 4, 4, 4, 1, 4, 1, 4, 4, 4, 4, 4, 1, 4, 1, 4, 4, 4, 4],
+                    [4, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 4],
+                    [4, 1, 4, 4, 1, 4, 4, 4, 1, 4, 1, 4, 4, 4, 1, 4, 4, 1, 4],
+                    [4, 4, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 4, 4],
+                    [4, 4, 1, 4, 1, 4, 1, 4, 4, 4, 4, 4, 1, 4, 1, 4, 1, 4, 4],
+                    [4, 1, 1, 1, 1, 4, 1, 1, 1, 4, 1, 1, 1, 4, 1, 1, 1, 1, 4],
+                    [4, 1, 4, 4, 4, 4, 4, 4, 1, 4, 1, 4, 4, 4, 4, 4, 4, 1, 4],
+                    [4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4],
+                    [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
+                ];
+                foodSetup();
+                foodMap = copyArray(board);
+                var emptyCell = findRandomEmptyCell(board);
+                board[emptyCell[0]][emptyCell[1]] = 2;
+                shape.i = emptyCell[0];
+                shape.j = emptyCell[1];
+                keysDown = {};
+                addEventListener("keydown", function (e) {
+                    keysDown[e.code] = true;
+                }, false);
+                addEventListener("keyup", function (e) {
+                    keysDown[e.code] = false;
+                }, false);
+                interval = setInterval(UpdatePosition, 50);
+                //moveGhost_interval = setInterval(MoveGhost, 10000);
+            }
+
+
+            function findRandomEmptyCell(board) {
+                var i = Math.floor((Math.random() * BOARD_HEIGHT - 1) + 1);
+                var j = Math.floor((Math.random() * BOARD_WIDTH - 1) + 1);
+                while (board[i][j] !== 1) {
+                    i = Math.floor((Math.random() * BOARD_HEIGHT - 1) + 1);
+                    j = Math.floor((Math.random() * BOARD_WIDTH - 1) + 1);
+                }
+                return [i, j];
+            }
+
+            /**
+             * @return {number}
+             */
+            function GetKeyPressed() {
+                if (keysDown['ArrowUp']) {
+                    drorMotionIndex = 3;
+                    direction = 3;
+                }
+                if (keysDown['ArrowDown']) {
+                    drorMotionIndex = 4;
+                    direction = 4;
+                }
+                if (keysDown['ArrowLeft']) {
+                    drorMotionIndex = 1;
+                    direction = 1;
+                }
+                if (keysDown['ArrowRight']) {
+                    drorMotionIndex = 2;
+                    direction = 2;
+                }
+            }
+
+            function Draw() {
+                context.clearRect(0, 0, canvas.width, canvas.height); //clean board
+                lblScore.value = score;
+                lblTime.value = time_elapsed;
+                for (var i = 0; i < BOARD_HEIGHT; i++) {
+                    for (var j = 0; j < BOARD_WIDTH; j++) {
+                        var center = new Object();
+                        center.x = j * SIZE;
+                        center.y = i * SIZE;
+                        if (board[i][j] === 2 ) {
+                            context.fillStyle = "#000000";
+                            context.fillRect(center.x, center.y, SIZE, SIZE);
+                            context.drawImage(floor, center.x, center.y, SIZE, SIZE);
+
+                            if(drorSpeedController === 0) {
+                                if (drorMotionIndex === 2) {
+                                    drorToDraw = DrorRight[animationCounter % 4];
+                                } else if (drorMotionIndex === 1) {
+                                    drorToDraw = DrorLeft[animationCounter % 4];
+                                } else if (drorMotionIndex === 3) {
+                                    drorToDraw = DrorUp[animationCounter % 4];
+                                } else if (drorMotionIndex === 4) {
+                                    drorToDraw = DrorDown[animationCounter % 4];
+                                }
+                                if (animationSpeed % 2 === 0) {
+                                    animationCounter++;
+                                }
+                            }
+                            // context.drawImage(dror,0, 0, SIZE, SIZE);
+                            context.drawImage(drorToDraw, center.x, center.y, SIZE, SIZE);
+
+                        } else if (board[i][j] === 1) {
+                            context.fillStyle = "#000000";
+                            context.fillRect(center.x, center.y, SIZE, SIZE);
+                            context.drawImage(floor, center.x, center.y, SIZE, SIZE);
+                            context.drawImage(food_simple, center.x, center.y, SIZE, SIZE);
+
+                        } else if (board[i][j] === 8) {
+                            context.fillStyle = "#000000";
+                            context.fillRect(center.x, center.y, SIZE, SIZE);
+                            context.drawImage(floor, center.x, center.y, SIZE, SIZE);
+                            context.drawImage(diamond, center.x, center.y, SIZE, SIZE);
+
+                        } else if (board[i][j] === 9) {
+                            context.fillStyle = "#000000";
+                            context.fillRect(center.x, center.y, SIZE, SIZE);
+                            context.drawImage(floor, center.x, center.y, SIZE, SIZE);
+                            context.drawImage(food_special, center.x, center.y, SIZE, SIZE);
+
+                        } else if (board[i][j] === 4) {
+                            context.drawImage(wall, center.x, center.y, SIZE, SIZE);
+                        } else if (board[i][j] === 0) {
+                            context.fillStyle = "#000000";
+                            context.fillRect(center.x, center.y, SIZE, SIZE);
+
+                        } else if (board[i][j] === 5) {
+                            // context.strokeStyle = "0";
+                            context.fillStyle = "#000000";
+                            context.fillRect(center.x, center.y, SIZE, SIZE);
+                            // context.strokeRect(center.x, center.y, SIZE, SIZE);
+                            context.drawImage(floor, center.x, center.y, SIZE, SIZE);
+                            // context.beginPath();
+                            // context.arc(center.x + SIZE / 2, center.y + SIZE / 2, SIZE / 6, 0, 2 * Math.PI); // circle
+                            // context.fillStyle = "#b61381"; //color
+                            // context.fill();
+                            context.drawImage(g_1, center.x, center.y, SIZE, SIZE);
+
+                        } else if (board[i][j] === 6) {
+                            // context.strokeStyle = "0";
+                            context.fillStyle = "#000000";
+                            context.fillRect(center.x, center.y, SIZE, SIZE);
+                            // context.strokeRect(center.x, center.y, SIZE, SIZE);
+                            context.drawImage(floor, center.x, center.y, SIZE, SIZE);
+                            // context.beginPath();
+                            // context.arc(center.x + SIZE / 2, center.y + SIZE / 2, SIZE / 6, 0, 2 * Math.PI); // circle
+                            // context.fillStyle = "#523b2f"; //color
+                            // context.fill();
+                            context.drawImage(g_2, center.x, center.y, SIZE, SIZE);
+
+                        } else if (board[i][j] === 7) {
+                            // context.strokeStyle = "0";
+                            context.fillStyle = "#000000";
+                            context.fillRect(center.x, center.y, SIZE, SIZE);
+                            // context.strokeRect(center.x, center.y, SIZE, SIZE);
+                            context.drawImage(floor, center.x, center.y, SIZE, SIZE);
+                            // context.beginPath();
+                            // context.arc(center.x + SIZE / 2, center.y + SIZE / 2, SIZE / 6, 0, 2 * Math.PI); // circle
+                            // context.fillStyle = "#ca170f"; //color
+                            // context.fill();
+                            context.drawImage(g_3, center.x, center.y, SIZE, SIZE);
+
+
+                        } else if (board[i][j] === 10) {
+                            // context.strokeStyle = "0";
+                            context.fillStyle = "#000000";
+                            context.fillRect(center.x, center.y, SIZE, SIZE);
+                            context.drawImage(floor, center.x, center.y, SIZE, SIZE);
+                            context.drawImage(skullFig, center.x, center.y, SIZE, SIZE);
+
+                        }
+                        if (board[i][j] === 0) {
+                            context.drawImage(floor, center.x, center.y, SIZE, SIZE);
+
+                        }
+                    }
+                    if(gameCompleted === 1){
+                        context.drawImage(victoryFig, 80, 80, 450, 450);
+                    }
+                    if(gameOverIndication===1){
+                        context.drawImage(gameOverFig, 80, 80, 450, 450);
+                    }
+
+                }
+
+
+            }
+
+            function checkGameOver() {
+                if (ghost_1_loc[0] === shape.i && ghost_1_loc[1] === shape.j) {
+                    gameOverIndication = 1;
+                }
+                if (ghost_2_loc[0] === shape.i && ghost_2_loc[1] === shape.j) {
+                    gameOverIndication = 1;
+                }
+                if (ghost_3_loc[0] === shape.i && ghost_3_loc[1] === shape.j) {
+                    gameOverIndication = 1;
+                }
+            }
+
+
+            function foodSetup() {
+                var randomFood;
+                for (var i = 0; i < BOARD_HEIGHT; i++) {
+                    for (var j = 0; j < BOARD_WIDTH; j++) {
+                        if (board[i][j] === 1) {
+                            randomFood = Math.floor((Math.random() * 100 - 1) + 1);
+                            if (randomFood > 90) {
+                                board[i][j] = 9;
+                            } else if (randomFood > 60) {
+                                board[i][j] = 8;
+                            }
+                        }
+                    }
+                }
+            }
+
+            function resetBoard() {
+                for (var i = 0; i < BOARD_HEIGHT; i++) {
+                    for (var j = 0; j < BOARD_WIDTH; j++) {
+                        if (board[i][j] === 5 || board[i][j] === 6 || board[i][j] === 7 || board[i][j] === 2) {
+                            board[i][j] = foodMap[i][j];
+                        }
+                        if (ghostScanboard_init[i][j] === 2) {
+                            ghostScanboard_init[i][j] = 0;
+                        }
+                    }
+                    ghost_1_loc = [10, 8];
+                    ghost_2_loc = [10, 9];
+                    ghost_3_loc = [10, 10];
+                    board[10][8] = 5;
+                    board[10][9] = 6;
+                    board[10][10] = 7;
+                    ghostScanboard_init[shape.i][shape.j] = 2;
+                }
+            }
+
+            function showSkull() {
+                if (skullVisible === 0) {
+                    skullVisible = 1;
+                    var pos = findRandomEmptyCell(board);
+                    skull.x = pos[0];
+                    skull.y = pos[1];
+                }
+                var posMoves = getPossibleMoves(skull.x, skull.y, board);
+                board[skull.x][skull.y] = foodMap[skull.x][skull.y];
+                var randomIndex = Math.floor((Math.random() * posMoves.length - 1) + 1);
+                board[posMoves[randomIndex][0]][posMoves[randomIndex][1]] = 10;
+                skull.x = posMoves[randomIndex][0];
+                skull.y = posMoves[randomIndex][1];
+                // board[nextPos[0][0]][nextPos[0][1]] = 10;
+                // skull.x = nextPos[0][0];
+                // skull.y = nextPos[0][1];
+            }
+
+            function UpdatePosition() {
+                var showSkullChance = Math.floor((Math.random() * 200 - 1) + 2);
+                if (skullVisible === 1) {
+                    skullSpeed++;
+                    if (skullSpeed === 3) {
+                        skullSpeed = 0;
+                        showSkull();
+                    }
+                    var timeNow = new Date();
+                    if (timeNow - skullApearanceTime > 5000) {
+                        skullVisible = 0;
+                        board[skull.x][skull.y] = foodMap[skull.x][skull.y];
+                    }
+                }
+                if (showSkullChance % 200 === 0) {
+                    skullApearanceTime = new Date();
+                    showSkull();
+                }
+                ghostMoveCounter++;
+                if (ghostMoveCounter === 5) {
+                    ghostMoveCounter = 0;
+                    MoveGhost();
+                }
+                checkGameOver();
+                GetKeyPressed();
+                board[shape.i][shape.j] = 0;
+                foodMap[shape.i][shape.j] = 0;
+                ghostScanboard_init[shape.i][shape.j] = 0;
+                drorSpeedController++;
+                if(drorSpeedController === drorSpeed) {
+                    drorSpeedController = 0;
+                    if (direction === 1) { //left
+                        if (shape.j >= 2 && board[shape.i][shape.j - 1] !== 4) {
+                            shape.j--;
+                        } else if (shape.j < 2 && board[shape.i][shape.j - 1] !== 4) {
+                            if (shape.j === 1) {
+                                shape.j = 0;
+                            } else if (shape.j === 0) {
+                                shape.j = BOARD_WIDTH - 1;
+                            }
+                        }
+                        pacmanMoved = 1;
+                    }
+                    if (direction === 2) { //right
+                        if (shape.j < BOARD_WIDTH - 1 && board[shape.i][shape.j + 1] !== 4) {
+                            shape.j++;
+                        } else if (shape.j === BOARD_WIDTH - 1 && board[shape.i][shape.j + 1] !== 4) {
+                            shape.j = 0;
+                        }
+                        pacmanMoved = 1;
+                    }
+                    if (direction === 3) { //up
+                        if (shape.i > 0 && board[shape.i - 1][shape.j] !== 4) {
+                            shape.i--;
+                        }
+                        pacmanMoved = 1;
+                    }
+                    if (direction === 4) { //down
+                        if (shape.i < BOARD_HEIGHT - 1 && board[shape.i + 1][shape.j] !== 4) {
+                            shape.i++;
+                        }
+                        pacmanMoved = 1;
+                    }
+                }
+                // if (board[shape.i][shape.j] === 1) {
+                //     score++;
+                // }
+                if (board[shape.i][shape.j] === 1) {
+                    score = score + 5;
+                    eatHatzir.play();
+                    foodCounter--;
+                } else if (board[shape.i][shape.j] === 8) {
+                    score = score + 15;
+                    foodCounter--;
+                } else if (board[shape.i][shape.j] === 9) {
+                    score = score + 25;
+                    tetet.play();
+                    foodCounter--;
+                }
+                if (board[shape.i][shape.j] === 10) {
+                    catchedTheSkull.play();
+                    score = score + 50;
+                    skullVisible = 0;
+                    board[skull.x][skull.y] = foodMap[skull.x][skull.y];
+                }
+                board[shape.i][shape.j] = 2;
+                ghostScanboard_init[shape.i][shape.j] = 2;
+                var currentTime = new Date();
+                time_elapsed = (currentTime - start_time) / 1000;
+                if (foodCounter === 100) {
+                    backgroundMusic.stop();
+                    gameCompleteSound.play();
+                    window.clearInterval(interval);
+                    gameCompleted  =1;
+                    Draw();
+                    // wait(500);
+                    // window.alert("Game completed");
+                }
+                if (gameOverIndication === 1 && pacman_remain > 1) {
+                    backgroundMusic.stop();
+                    killed_sound.play();
+                    wait(500);
+                    // window.alert("eaten by ghost");
+                    backgroundMusic.play();
+                    gameOverIndication = 0;
+                    pacman_remain--;
+                    score = score - 10;
+                    var emptyCell = findRandomEmptyCell(board);
+                    shape.i = emptyCell[0];
+                    shape.j = emptyCell[1];
+                    resetBoard();
+                }
+                if (gameOverIndication === 1) {
+                    window.clearInterval(interval);
+                    backgroundMusic.stop();
+                    gameOverSound.play();
+                    Draw();
+                    // window.alert("Game Over");
+                } else {
+                    Draw();
+                }
+            }
+
+            function getPossibleMoves(x, y, ghostBoard) {
+                var movesArray = new Array();
+
+                if (x > 0) {
+                    if (ghostBoard[x - 1][y] != 4) {
+                        movesArray.push([x - 1, y]);
+                    }
+                }
+                if (x < BOARD_HEIGHT - 1) {
+                    if (ghostBoard[x + 1][y] != 4) {
+                        movesArray.push([x + 1, y]);
+                    }
+                }
+                if (y > 0) {
+                    if (ghostBoard[x][y - 1] != 4) {
+                        movesArray.push([x, y - 1]);
+                    }
+                }
+                if (y < BOARD_WIDTH - 1) {
+                    if (ghostBoard[x][y + 1] != 4) {
+                        movesArray.push([x, y + 1]);
+                    }
+                }
+
+                return movesArray;
+            }
+
+            function calculate_ghost_path(ghostLoc) {
+                var gPath = ghostBFS(ghostLoc[0], ghostLoc[1], ghostScanboard_init);
+                return gPath;
+            }
+
+            function MoveGhost() {
+                //tmpBoard = copyArray(board);
+                for (let index = 0; index < ghostNum; index++) {
+                    if (ghostArray[index] === 5) {
+                        ghost_1_path = [];
+                        ghost_1_path = calculate_ghost_path(ghost_1_loc);
+                        UpdateGhostPosition(ghostArray[index], ghost_1_path.pop(), ghost_1_loc);
+                    } else if (ghostArray[index] === 6) {
+                        ghost_1_path = [];
+                        ghost_2_path = calculate_ghost_path(ghost_2_loc);
+                        UpdateGhostPosition(ghostArray[index], ghost_2_path.pop(), ghost_2_loc);
+                    } else if (ghostArray[index] === 7) {
+                        ghost_1_path = [];
+                        ghost_3_path = calculate_ghost_path(ghost_3_loc);
+                        UpdateGhostPosition(ghostArray[index], ghost_3_path.pop(), ghost_3_loc);
+                    }
+                }
+            }
+
+            function UpdateGhostPosition(gNum, gDest, gSrc) {
+                var randomMoveChance = Math.floor((Math.random() * 100 - 1) + 1);
+                if (randomMoveChance <= 20) {
+                    posMoves = getPossibleMoves(gSrc[0], gSrc[1], ghostScanboard_init);
+                    var randomIndex = Math.floor((Math.random() * posMoves.length - 1) + 1);
+                    gDest.x = posMoves[randomIndex][0];
+                    gDest.y = posMoves[randomIndex][1];
+                }
+                if (gNum === 5) {
+                    //board[gSrc[0]][gSrc[1]] = ghost_1_prevValue;
+                    //ghost_1_prevValue = board[gDest.x][gDest.y];
+                    ghost_1_loc = [gDest.x, gDest.y];
+                } else if (gNum === 6) {
+                    //board[gSrc[0]][gSrc[1]] = ghost_2_prevValue;
+                    //ghost_2_prevValue = board[gDest.x][gDest.y];
+                    ghost_2_loc = [gDest.x, gDest.y];
+                } else if (gNum === 7) {
+                    //board[gSrc[0]][gSrc[1]] = foodMap[gSrc[0]][gSrc[1]];
+                    //ghost_3_prevValue = board[gDest.x][gDest.y];
+                    ghost_3_loc = [gDest.x, gDest.y];
+                }
+                board[gSrc[0]][gSrc[1]] = foodMap[gSrc[0]][gSrc[1]];
+                board[gDest.x][gDest.y] = gNum;
+            }
+
+            function ghostBFS(x, y, ghostScanboard) {
+                // Create a Queue and add our initial node in it
+                var scan = new Array();
+                var path = new Array();
+                var foundNode = new Object();
+                var found = 0;
+                var gScan = copyArray(ghostScanboard);
+                let q = new Array();
+                var srcNode = new Object();
+                srcNode.x = x;
+                srcNode.y = y;
+                srcNode.pred = null;
+                q.push(srcNode);
+                var i = x;
+                var j = y;
+                // Mark the first node as explored explored.
+                gScan[i][j] = 4;
+
+                // We'll continue till our queue gets empty
+                while (q.length > 0 && gScan[i][j] != 2 && !found) {
+                    let t = q.shift();
+                    i = t.x;
+                    j = t.y;
+                    // Log every element that comes out of the Queue
+                    // console.log(t);
+                    scan.push(t);
+                    var posMoves = getPossibleMoves(i, j, gScan);
+                    posMoves.forEach(function (entry) {
+                        if (gScan[entry[0]][entry[1]] === 2) {
+                            foundNode = new Object();
+                            foundNode.x = entry[0];
+                            foundNode.y = entry[1];
+                            foundNode.pred = t;
+                        } else {
+                            gScan[entry[0]][entry[1]] = 4;
+                        }
+                        var node = new Object();
+                        node.x = entry[0];
+                        node.y = entry[1];
+                        node.pred = t;
+                        q.push(node);
+                    });
+                }
+                while (foundNode.pred != null) {
+                    path.push(foundNode);
+                    foundNode = foundNode.pred;
+                }
+                return path;
+            }
+
+            function copyArray(src) {
+                var dopArray = new Array();
+                for (var i = 0; i < BOARD_HEIGHT; i++) {
+                    dopArray[i] = new Array();
+                    for (var j = 0; j < BOARD_WIDTH; j++) {
+                        dopArray[i][j] = src[i][j];
+                    }
+                }
+                return dopArray;
+            }
+
+            function Sound(src) {
+                this.sound = document.createElement("audio");
+                this.sound.src = src;
+                this.sound.setAttribute("preload", "auto");
+                this.sound.setAttribute("controls", "none");
+                this.sound.style.display = "none";
+                document.body.appendChild(this.sound);
+                this.play = function () {
+                    this.sound.play();
+                }
+                this.stop = function () {
+                    this.sound.pause();
+                }
+            }
+
+            function wait(ms){
+                var start = new Date().getTime();
+                var end = start;
+                while(end < start + ms) {
+                    end = new Date().getTime();
+                }
+            }
+        </script>
+    </div>
+
+</body>
+
+</html>
