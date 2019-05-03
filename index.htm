@@ -51,15 +51,37 @@
     </nav>
 </div>
 
+<div class="container_footer fixed-bottom">
+    <nav>
+        <ul>
+            <li><p id="btn_contact">Contact</p></li>
+        </ul>
+    </nav>
+</div>
+
 <script>
 
     $(document).ready(function () {
 
+        /* init global cars */
         var list_users = [];
         var list_msgs = [];
-        var list_keys = [4];
+        var list_keys = [null, null, null, null];
         var msg = "";
 
+        var key_up;
+        var key_down;
+        var key_left;
+        var key_right;
+
+        var amount_balls;
+        var color_balls;
+        var amount_time;
+        var amount_ghosts;
+
+        /* init modal windows */
+
+        /* About */
         var modal = document.getElementById('wnd_about');
         var modalBtn = document.getElementById('btn_about');
         var closeBtn = document.getElementsByClassName('closeBtn')[0];
@@ -68,17 +90,30 @@
         closeBtn.addEventListener('click', hide_about);
         window.addEventListener('click', clickOutside_about);
 
+        /* Contact */
+        var modal_contact = document.getElementById('wnd_contact');
+        var modalContactBtn = document.getElementById('btn_contact');
+        var closeContactBtn = document.getElementsByClassName('closeContactBtn')[0];
+
+        modalContactBtn.addEventListener('click', show_contact);
+        closeContactBtn.addEventListener('click', hide_contact);
+        window.addEventListener('click', clickOutside_contact);
+
+        /* Settings */
         var modal_settings = document.getElementById('wnd_settings');
-        var modalSettingsBtn = document.getElementById('btn_submit_login');
+        // var modalSettingsBtn = document.getElementById('btn_submit_login_tmp');
         var closeSettingsBtn = document.getElementsByClassName('closeSettingsBtn')[0];
 
-        modalSettingsBtn.addEventListener('click', show_settings);
+        // modalSettingsBtn.addEventListener('click', show_settings);
         closeSettingsBtn.addEventListener('click', hide_settings);
         window.addEventListener('click', clickOutside_settings);
 
+        /* init user list and alerts */
         init_users();
         init_login_alerts();
         init_reg_alerts();
+
+        /* init all screens */
         hide_windows();
         show_welcome();
 
@@ -103,30 +138,49 @@
             show_about();
         });
 
-        $("#btn_setplay").click(function () {
-
-            var key_up = document.getElementById('btn_keyup');
-            var key_down = document.getElementById('btn_keydown');
-            var key_left = document.getElementById('btn_keyleft');
-            var key_right = document.getElementById('btn_keyright');
-
-            var amount_balls = document.getElementById('btn_amountBalls').value;
-            var color_balls = document.getElementById('btn_colorBalls').value;
-            var amount_time = document.getElementById('btn_amountTime').value;
-            var amount_ghosts = document.getElementById('btn_amountGhosts').value;
-
-            list_keys[0] = key_up.value.substring(0, 1).charCodeAt(0);
-            list_keys[1] = key_down.value.substring(0, 1).charCodeAt(0);
-            list_keys[2] = key_left.value.substring(0, 1).charCodeAt(0);
-            list_keys[3] = key_right.value.substring(0, 1).charCodeAt(0);
-            show_game()
-        });
-
         $("#btn_random").click(function () {
             set_default_keys();
+            show_game();
+        });
+
+        $("#btn_setplay").click(function () {
             show_game()
         });
 
+        /* detects keys at settings screen */
+        document.getElementById("btn_keyup").onkeydown = function (e) {
+            key_up = e.code;
+            document.getElementById('btn_keyup').value = e.code;
+        };
+
+        document.getElementById("btn_keydown").onkeydown = function (e) {
+            key_down = e.code;
+            document.getElementById('btn_keydown').value = e.code;
+        };
+
+        document.getElementById("btn_keyleft").onkeydown = function (e) {
+            key_left = e.code;
+            document.getElementById('btn_keyleft').value = e.code;
+        };
+
+        document.getElementById("btn_keyright").onkeydown = function (e) {
+            key_right = e.code;
+            document.getElementById('btn_keyright').value = e.code;
+        };
+
+        function valid_input_keys() {
+            for (var i = 0; i < list_keys.length; i++) {
+                if (list_keys[i] == null)
+                    return false;
+            }
+            return true;
+        }
+
+        document.addEventListener('keydown', function (e) {
+            var key = e.code;
+            if (key == 'Escape')
+                modal.style.display = 'none';
+        });
 
         function hide_windows() {
             $('#wnd_welcome').hide();
@@ -212,27 +266,72 @@
                 modal.style.display = 'none';
         }
 
+        function show_contact() {
+            modal_contact.style.display = 'block';
+        }
+
+        function hide_contact() {
+            modal_contact.style.display = 'none';
+        }
+
+        function clickOutside_contact(e) {
+            if (e.target == modal_contact)
+                modal_contact.style.display = 'none';
+        }
+
         function show_settings() {
             modal_settings.style.display = 'block';
         }
 
         function hide_settings() {
             modal_settings.style.display = 'none';
+            // show_game();
         }
 
         function clickOutside_settings(e) {
             if (e.target == modal_settings)
                 modal_settings.style.display = 'none';
+            // show_game();
         }
 
         function show_game_and_settings() {
             hide_windows();
             $("#wnd_play").show();
-            $("#wnd_settings").show();
+            modal_settings.style.display = 'block';
         }
 
         function show_game() {
+            if (!valid_input_keys())
+                set_default_keys();
+            else {
+                list_keys[0] = key_up;
+                list_keys[1] = key_down;
+                list_keys[2] = key_left;
+                list_keys[3] = key_right;
+                // list_keys[3] = key_right.value.substring(0, 1).charCodeAt(0);
+            }
+            if (amount_balls === '')
+                amount_balls = 70;
+            else
+                amount_balls = document.getElementById('btn_amountBalls').value;
+
+            if (color_balls === '')
+                color_balls = 'gold';
+            else
+                color_balls = document.getElementById('btn_colorBalls').value;
+
+            if (amount_time === '')
+                amount_time = 60;
+            else
+                amount_time = document.getElementById('btn_amountTime').value;
+
+            if (amount_ghosts === '')
+                amount_ghosts = 3;
+            else
+                amount_ghosts = document.getElementById('btn_amountGhosts').value;
+
             $("#wnd_settings").hide();
+
         }
 
         $("#btn_submit_login").click(function () {
@@ -244,26 +343,17 @@
 
             init_login_alerts();
             hide_popups();
-            show_game_and_settings()
 
             /* validation start */
-            /*
-                            if (uname === 'a' && pass === 'a')
-                                show_game_and_settings()
-
-                            if(!valid_user(uname, pass)) {
-                                resume = false;
-                            } // (1) uname
-
-                            if(!valid_pass(pass)) {
-                                resume = false;
-                            } // (2) pass
-                            if (!resume) { // if error
-                                var a = 0;
-                            }
-                            else
-                                show_game_and_settings();
-            */
+            if (uname === 'a' && pass === 'a') {
+                show_game_and_settings();
+            } else {
+                if (!valid_user(uname, pass)) {
+                    resume = false;
+                }
+                if (resume)
+                    show_game_and_settings();
+            }
 
         }); // submit_login onClick end
 
@@ -342,7 +432,7 @@
                             loc = "nd";
                         else if (i === 2)
                             loc = "rd";
-                        msg = "Oops, name contains numbers. Your " + i + loc + " letter is a number.";
+                        msg = "Oops, name contains numbers. Your " + (i + 1) + loc + " letter is a number.";
                         return false;
                     }
                 }
@@ -356,7 +446,7 @@
             for (var i = 0; i < list_users.length; i++)
                 if (list_users[i].uname === uname) {
                     user_correct = true;
-                    if (list_users[i].uname === pass)
+                    if (list_users[i].pass === pass)
                         pass_correct = true;
                     if (user_correct && pass_correct)
                         return true;
@@ -370,7 +460,6 @@
             msg = "User not found, Please create a free account! (Go to the 'Register' tab on top)";
             $("#popup_login").show();
             $("#alert_login").html(msg).show();
-
             return false;
         }
 
@@ -442,26 +531,18 @@
 
 </script>
 
-<div class="container_footer fixed-bottom">
-    <nav>
-        <ul>
-            <li> Contact</li>
-        </ul>
-    </nav>
-</div>
-
 <div id="wnd_welcome" class="container_main">
     <img src="images\\img_welcome.png" class="bg_image">
     <p class="golden-base golden3">WELCOME</p>
     <!-- <h1 class="title">Welcome</h1> -->
-    <div class="small_left">
-        <!-- <p class="lead" id="welcome_text"><span style="color:white;font-weight:bold">To play, please login.</span><br /> </p>           -->
-        <button id="btn_login_welcome" type="button" class="btn-circle lg bg">Login</button>
-    </div>
-    <div class="small_right">
-        <!-- <p class="lead" id="welcome_text"><br /><span style="color:white;font-weight:bold">If you don't have an account, register now!</span> <br /> </p> -->
-        <button id="btn_register2" type="button" class="btn-circle lg bg">Register</button>
-    </div>
+    <!--        <div class="small_left">-->
+    <!-- <p class="lead" id="welcome_text"><span style="color:white;font-weight:bold">To play, please login.</span><br /> </p>           -->
+    <button id="btn_login_welcome" type="button" class="btn-circle lg bg pos-welcome-login">Login</button>
+    <!--        </div>-->
+    <!--        <div class="small_right">-->
+    <!-- <p class="lead" id="welcome_text"><br /><span style="color:white;font-weight:bold">If you don't have an account, register now!</span> <br /> </p> -->
+    <button id="btn_register2" type="button" class="btn-circle lg bg pos-welcome-reg">Register</button>
+    <!--        </div>-->
 </div>
 
 <div id="wnd_login" class="container_login">
@@ -532,8 +613,8 @@
             </br></br>
         </form>
     </div>
-    <button id="btn_submit_reg" type="button" class="btn btn-circle lg bg pos-login-btn-play">Submit</button>
-    <button id="btn_cancel_reg" type="button" class="btn btn-circle lg bg pos-login-btn-cancel">Cancel</button>
+    <button id="btn_submit_reg" type="button" class="btn btn-circle lg bg pos-reg-btn-play">Submit</button>
+    <button id="btn_cancel_reg" type="button" class="btn btn-circle lg bg pos-reg-btn-cancel">Cancel</button>
     </br></br>
 </div>
 
@@ -544,7 +625,48 @@
             <h2>About</h2>
         </div>
         <div class="modal-body1">
-            <p>Matan Parker & Edo Lior</p>
+            <p><span style="font-weight: bold">Copyright:</span> Matan Parker & Edo Lior</p>
+            <p><span style="font-weight: bold">Plugins Used:</span> Bootstrap V.3, Google fonts. </p>
+            <p><span style="font-weight: bold">Task Difficulties:</span> Positioning elements in the windows. </p>
+        </div>
+        <div class="modal-footer">
+            <h3>Go on and stary playing!</h3>
+        </div>
+    </div>
+</div>
+
+<div id="wnd_contact" class="modal_contact">
+    <div class="modal-content1">
+        <div class="modal-header1">
+            <span class="closeContactBtn">&times;</span>
+            <h2>Contact</h2>
+        </div>
+        <div class="modal-body1">
+            <form>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="fname">First Name</label>
+                        <input type="text" id="fname" name="firstname" placeholder="first name">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="lname">Last Name</label>
+                        <input type="text" id="lname" name="lastname" placeholder="last name">
+                    </div>
+                </div>
+                </br></br>
+                <label for="subject">Subject</label>
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <textarea id="subject" name="subject" placeholder="Type your content here..."
+                                  style="height:100px;width: 350px;"></textarea>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <button class="btn-submit" value="Submit"> Submit</button>
+                    </div>
+                </div>
+            </form>
         </div>
         <div class="modal-footer">
             <h3>Go on and stary playing!</h3>
@@ -553,68 +675,73 @@
 </div>
 
 <div id="wnd_settings" class="modal_settings">
-    <div class="modal-content2 w">
+    <div id="settings_cont" class="modal-content2 w">
         <div class="modal-header2">
             <span class="closeSettingsBtn">&times;</span>
             <h2>Welcome to Settings!</h2>
         </div>
-        <div class="modal-body2_left">
-            <p>Choose keys got movement:</br></br></br></br></p>
-            <div id="btn_up">
-                <p>Up:</p>
-                <input type="text" name="upkey" size="5" id="btn_keyup" style="color:black">
+        <div id="setting_main" class="modal-body2 ">
+            <div class="modal-body2 left">
+                <p>Choose keys got movement:</p>
+                <div id="btn_up">
+                    <p>Up:</p>
+                    <input type="text" size="8" id="btn_keyup" style="color:black" readonly>
+                </div>
+                <div id="btn_right">
+                    <p>Right:</p>
+                    <input type="text" size="8" id="btn_keyright" style="color:black" readonly>
+                </div>
+                <div id="btn_left">
+                    <p>Left:</p>
+                    <input type="text" size="8" id="btn_keyleft" style="color:black" readonly>
+                </div>
+                <img src="images\\keys2.png" id="image_keys" style="color:black">
+                <div id="btn_down">
+                    <p>Down:</p>
+                    <input type="text" size="8" id="btn_keydown" style="color:black" readonly>
+                </div>
+                <button id="btn_random" type="button" class="btn btn-circle lg bg pos-settings-btn-random">Random
+                </button>
             </div>
-            <img src="images\\keys2.png" class="modal-body2_left image_keys" style="color:black">
-            <div id="btn_down">
-                <p>Down:</p>
-                <input type="text" name="downkey" size="5" id="btn_keydown" style="color:black">
-            </div>
-            <div id="btn_left">
-                <p>Left:</p>
-                <input type="text" name="leftkey" size="5" id="btn_keyleft" style="color:black">
-            </div>
-            <div id="btn_right">
-                <p>Right:</p>
-                <input type="text" name="rightkey" size="5" id="btn_keyright" style="color:black">
-            </div>
-        </div>
-        <button id="btn_random" type="button" class="btn btn-circle lg bg pos-settings-btn-random">Random</button>
-        <div class="modal-body2_right">
-            <div class="box-amount-balls">
-                <p>Choose amount of balls 50-90:</p>
-                <input type="number" name="quantity" min="50" max="90" id="btn_amountBalls" style="color:black">
-                </br></br>
+            <div class="modal-body2 right">
+                <div class="box-amount-balls">
+                    <p>Choose amount of balls 50-90:</p>
+                    <input type="number" size="40" name="quantity" min="50" max="90" id="btn_amountBalls"
+                           style="color:black">
+                    </br></br>
+                </div>
                 <p>Choose the color of the balls:</p>
-            </div>
-            <div class="box-colors">
-                <select id="btn_colorBalls">
-                    <option><span style="color:gold">GOLD</span></option>
-                    <option><span style="color:silver">SILVER</span></option>
-                    <option><span style="color:orange">ORANGE</span></option>
-                </select>
-            </div>
-            <div class="box-time">
-                </br></br>
-                <p>Choose amount of time (at least 60 seconds):</p>
-                <input type="number" name="quantity" min="60" max="" id="btn_amountTime" style="color:black">
-            </div>
-            <div class="box-amount-monsters">
+                <div class="box-colors">
+                    <select id="btn_colorBalls">
+                        <div id="text_gold">
+                            <option> GOLD</option>
+                        </div>
+                        <option><span style="color:silver">SILVER</span></option>
+                        <option><span style="color:orange">ORANGE</span></option>
+                    </select>
+                </div>
+                <div class="box-time">
+                    <p>Choose amount of time (at least 60 seconds):</p>
+                    <input type="number" size="40" name="quantity" min="60" max="" id="btn_amountTime"
+                           style="color:black">
+                </div>
                 </br></br>
                 <p>Choose amount of ghosts:</p>
-                <select id="btn_amountGhosts">
-                    <option> 1</option>
-                    <option> 2</option>
-                    <option> 3</option>
-                </select>
+                <div class="box-amount-ghosts">
+                    <select id="btn_amountGhosts">
+                        <option> 1</option>
+                        <option> 2</option>
+                        <option> 3</option>
+                    </select>
+                </div>
+                <button id="btn_setplay" type="button" class="btn btn-circle lg bg pos-settings-btn-setplay">Set&Play
+                </button>
             </div>
-            <button id="btn_setplay" type="button" class="btn btn-circle lg bg pos-settings-btn-setplay"
-                    onclick="Start()">Set&Play
-            </button>
         </div>
     </div>
 </div>
 
-<div id="wnd_play" class="container_main">
+<div id="wnd_play" class="container_main game">
     SCORE:
     <input id="lblScore" type="text"/>
     <br/>
@@ -624,8 +751,10 @@
     <!--        <iframe src="sounds/mmm.mp3" allow="autoplay" style="display:none" id="iframeAudio">-->
     <!--        </iframe>-->
     <!--        <canvas onload="window.onload" id="canvas" height="660" width="600"></canvas>-->
-    <canvas id="canvas" height="660" width="600"></canvas>
 
+    <!--        <canvas id="canvas" height="660" width="600"></canvas>-->
+    <canvas id="canvas"></canvas>
+    <!--        <canvas height="660" width="600"></canvas>-->
 
     <script type="text/javascript">
 
@@ -704,6 +833,8 @@
         num2.src = "images/num_2.svg";
         var num3 = new Image();
         num3.src = "images/num_3.svg";
+        var canDoBetter = new Image();
+        canDoBetter.src = "images/canDoBetter.svg";
         var skull = new Object();
         var catchedTheSkull_indication = 0;
         skull.x = 0;
@@ -713,6 +844,8 @@
         var skullVisible = 0;
         var animationSpeed = 0;
         var animationCounter = 0;
+        var timeLimit = 60;
+        var ballsTheme = "";
 
         //Game sounds
         var killed_sound = new Sound("sounds/killed.mp3");
@@ -761,9 +894,15 @@
         var ghostNum = 3;  // number of ghosts in game
         var gameCompleted = 0;
         foodCounter = 186;
+        var numBalls_toRemove =136;
         var starter = 3;
         var respan_time = 0;
 
+        //-------------Keys SetUp Vars --------------//
+        var keyUp_set = 'ArrowUp';
+        var keyDown_set = 'ArrowDown';
+        var keyLeft_set = 'ArrowLeft';
+        var keyRight_set = 'ArrowRight';
 
         var ghostScanboard_init = board = [
             [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
@@ -789,13 +928,7 @@
             [4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4],
             [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
         ];
-        function dialog(text) {
-            context.fillStyle = "#FFFF00";
-            context.font      = "18px Calibri";
-            var width = context.measureText(text).width,
-                x     = ((BOARD_WIDTH * BOARD_HEIGHT) - width) / 2;
-            context.fillText(text, x, (BOARD_HEIGHT * 10) + 8);
-        }
+
 
         var btn_setplay = document.getElementById("btn_setplay");
         btn_setplay.onclick = function () {
@@ -805,17 +938,36 @@
             Start();
         };
 
-        function initParams(){
-            var numBalls = parseInt(document.getElementById("btn_amountBalls").value);
-            var timeLimit = parseInt(document.getElementById("btn_amountTime").value);
-            var ballsTheme = parseInt(document.getElementById("btn_colorBalls").value);
+        function initParams() {
+            numBalls_toRemove = parseInt(document.getElementById("btn_amountBalls").value);
+            if (isNaN(numBalls_toRemove)) {
+                numBalls_toRemove = 186;
+            }
+            numBalls_toRemove = 186 - numBalls_toRemove;
+            timeLimit = parseInt(document.getElementById("btn_amountTime").value);
+            if (isNaN(timeLimit)) {
+                timeLimit = 60;
+            }
+            ballsTheme = parseInt(document.getElementById("btn_colorBalls").value);
+            if (isNaN(ballsTheme)) {
+                ballsTheme = "regular";
+            }
             ghostNum = parseInt(document.getElementById("btn_amountGhosts").value);
-            var keyUp_set = document.getElementById("btn_keyup").value;
-            var keyDown_set = document.getElementById("btn_keydown").value;
-            var keyLeft_set = document.getElementById("btn_keyleft").value;
-            var keyRight_set = document.getElementById("btn_keyright").value;
-            print();
+            if (isNaN(ghostNum)) {
+                ghostNum = 3;
+            }
+            keyUp_set = document.getElementById("btn_keyup").value;
+            keyDown_set = document.getElementById("btn_keydown").value;
+            keyLeft_set = document.getElementById("btn_keyleft").value;
+            keyRight_set = document.getElementById("btn_keyright").value;
+            if (keyUp_set === "" || keyDown_set === "" || keyLeft_set === "" || keyRight_set === "") {
+                keyUp_set = 'ArrowUp';
+                keyDown_set = 'ArrowDown';
+                keyLeft_set = 'ArrowLeft';
+                keyRight_set = 'ArrowRight';
+            }
         }
+
         function Start() {
             // board = new Array();
             score = 0;
@@ -846,6 +998,7 @@
                 [4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4],
                 [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
             ];
+            ballNum_set();
             foodSetup();
             foodMap = copyArray(board);
             var emptyCell = findRandomEmptyCell(board);
@@ -863,6 +1016,13 @@
             //moveGhost_interval = setInterval(MoveGhost, 10000);
         }
 
+        function ballNum_set(){
+            while(numBalls_toRemove>0){
+                var cell = findRandomEmptyCell(board);
+                board[cell[0]][cell[1]] = 0;
+                numBalls_toRemove--;
+            }
+        }
 
         function findRandomEmptyCell(board) {
             var i = Math.floor((Math.random() * BOARD_HEIGHT - 1) + 1);
@@ -878,19 +1038,19 @@
          * @return {number}
          */
         function GetKeyPressed() {
-            if (keysDown['ArrowUp']) {
+            if (keysDown[keyUp_set]) {
                 drorMotionIndex = 3;
                 direction = 3;
             }
-            if (keysDown['ArrowDown']) {
+            if (keysDown[keyDown_set]) {
                 drorMotionIndex = 4;
                 direction = 4;
             }
-            if (keysDown['ArrowLeft']) {
+            if (keysDown[keyLeft_set]) {
                 drorMotionIndex = 1;
                 direction = 1;
             }
-            if (keysDown['ArrowRight']) {
+            if (keysDown[keyRight_set]) {
                 drorMotionIndex = 2;
                 direction = 2;
             }
@@ -902,6 +1062,9 @@
             context.clearRect(0, 0, canvas.width, canvas.height); //clean board
             lblScore.value = score;
             lblTime.value = time_elapsed;
+            if (time_elapsed > timeLimit) {
+                gameOverIndication = 1;
+            }
             for (var i = 0; i < BOARD_HEIGHT; i++) {
                 for (var j = 0; j < BOARD_WIDTH; j++) {
                     var center = new Object();
@@ -1002,30 +1165,66 @@
                         context.drawImage(floor, center.x, center.y, SIZE, SIZE);
 
                     }
+                    if (ballsTheme !== "regular") {
+                        var image;
+                        if (ballsTheme === "bloody") {
+                            if (board[i][j] !== 4) {
+                                image = context.getImageData(center.x, center.y, SIZE, SIZE);
+                                bloodyColors(image.data);
+                                context.putImageData(image, center.x, center.y);
+                            }
+                        } else if (ballsTheme === "spooky") {
+                            if (board[i][j] !== 4) {
+                                image = context.getImageData(center.x, center.y, SIZE, SIZE);
+                                invertColors(image.data);
+                                context.putImageData(image, center.x, center.y);
+                            }
+
+                        }
+                    }
                 }
                 if (gameCompleted === 1) {
                     context.drawImage(victoryFig, 80, 80, 450, 450);
                 }
                 if (gameOverIndication === 1) {
-                    context.drawImage(gameOverFig, 80, 80, 450, 450);
+                    if(score<150){
+                        context.drawImage(canDoBetter, 80, 80, 450, 450);
+                    }else{
+                        context.drawImage(gameOverFig, 80, 80, 450, 450);
+                    }
+
                 }
                 var time_now = new Date();
-                if(starter!==0 && time_now-respan_time > 1000){
+                if (starter !== 0 && time_now - respan_time > 1000) {
                     starter--;
                     respan_time = new Date();
                 }
                 if (starter !== 0) {
-                    if(starter===3){
+                    if (starter === 3) {
                         context.drawImage(num3, 80, 80, 450, 450);
-                    }
-                    else if(starter===2){
+                    } else if (starter === 2) {
                         context.drawImage(num2, 80, 80, 450, 450);
-                    }
-                    else  if(starter===1){
+                    } else if (starter === 1) {
                         context.drawImage(num1, 80, 80, 450, 450);
                     }
                 }
 
+            }
+        }
+
+        function invertColors(data) {
+            for (var i = 0; i < data.length; i += 4) {
+                data[i] = data[i] ^ 255; // Invert Red
+                data[i + 1] = data[i + 1] ^ 255; // Invert Green
+                data[i + 2] = data[i + 2] ^ 255; // Invert Blue
+            }
+        }
+
+        function bloodyColors(data) {
+            for (var i = 0; i < data.length; i += 4) {
+                data[i] = data[i] + 40; // Invert Red
+                data[i + 1] = data[i + 1] - 30; // Invert Green
+                data[i + 2] = data[i + 2] - 30; // Invert Blue
             }
         }
 
@@ -1069,11 +1268,15 @@
                     }
                 }
                 ghost_1_loc = [10, 8];
-                ghost_2_loc = [10, 9];
-                ghost_3_loc = [10, 10];
                 board[10][8] = 5;
-                board[10][9] = 6;
-                board[10][10] = 7;
+                if (ghostNum > 1) {
+                    ghost_2_loc = [10, 9];
+                    board[10][9] = 6;
+                    if (ghostNum > 2) {
+                        ghost_3_loc = [10, 10];
+                        board[10][10] = 7;
+                    }
+                }
                 ghostScanboard_init[shape.i][shape.j] = 2;
             }
         }
@@ -1091,8 +1294,8 @@
             board[posMoves[randomIndex][0]][posMoves[randomIndex][1]] = 10;
             skull.x = posMoves[randomIndex][0];
             skull.y = posMoves[randomIndex][1];
-            if(skull.x === shape.x && skull.y=== shape.y){
-                catchedTheSkull_indication=1;
+            if (skull.x === shape.x && skull.y === shape.y) {
+                catchedTheSkull_indication = 1;
             }
             // board[nextPos[0][0]][nextPos[0][1]] = 10;
             // skull.x = nextPos[0][0];
@@ -1100,9 +1303,8 @@
         }
 
         function UpdatePosition() {
-            console.log(starter);
-            if(starter === 0){
-
+            if (starter === 0) {
+                backgroundMusic.play();
                 var showSkullChance = Math.floor((Math.random() * 200 - 1) + 2);
                 if (skullVisible === 1) {
                     skullSpeed++;
@@ -1123,7 +1325,7 @@
                 ghostMoveCounter++;
                 if (ghostMoveCounter === 5) {
                     ghostMoveCounter = 0;
-                    if(starter ===0){
+                    if (starter === 0) {
                         MoveGhost();
                     }
                 }
@@ -1183,7 +1385,7 @@
                     tetet.play();
                     foodCounter--;
                 }
-                if (catchedTheSkull_indication ===1 || board[shape.i][shape.j] === 10) {
+                if (catchedTheSkull_indication === 1 || board[shape.i][shape.j] === 10) {
                     catchedTheSkull_indication = 0;
                     catchedTheSkull.play();
                     score = score + 50;
@@ -1194,7 +1396,8 @@
                 ghostScanboard_init[shape.i][shape.j] = 2;
                 var currentTime = new Date();
                 time_elapsed = (currentTime - start_time) / 1000;
-                if (foodCounter === 100) {
+                time_elapsed = time_elapsed -3*(4-pacman_remain);
+                if (foodCounter === numBalls_toRemove) {
                     backgroundMusic.stop();
                     gameCompleteSound.play();
                     window.clearInterval(interval);
@@ -1203,13 +1406,12 @@
                     // wait(500);
                     // window.alert("Game completed");
                 }
-                if (gameOverIndication === 1 && pacman_remain > 1) {
+                if (gameOverIndication === 1 && pacman_remain > 1 && time_elapsed < timeLimit) {
                     backgroundMusic.stop();
                     killed_sound.play();
-                    starter=3;
+                    starter = 3;
                     respan_time = new Date();
                     // window.alert("eaten by ghost");
-                    backgroundMusic.play();
                     gameOverIndication = 0;
                     pacman_remain--;
                     score = score - 10;
@@ -1218,7 +1420,11 @@
                     shape.j = emptyCell[1];
                     resetBoard();
                 }
-                if (gameOverIndication === 1) {
+                if(gameOverIndication === 1 && pacman_remain===1){
+                    pacman_remain-=2;
+                }
+                // if ((gameOverIndication === 1 && time_elapsed > timeLimit) || pacman_remain<1) {
+                if (pacman_remain<0) {
                     window.clearInterval(interval);
                     backgroundMusic.stop();
                     gameOverSound.play();
@@ -1227,7 +1433,7 @@
                 } else {
                     Draw();
                 }
-            }else{
+            } else {
                 Draw();
             }
         }
