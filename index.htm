@@ -311,11 +311,6 @@
             else
                 amount_balls = document.getElementById('btn_amountBalls').value;
 
-            if  (color_balls === '')
-                color_balls = 'gold';
-            else
-                color_balls = document.getElementById('btn_colorBalls').value;
-
             if  (amount_time === '')
                 amount_time = 60;
             else
@@ -720,11 +715,9 @@
                 <p>Choose the color of the balls:</p>
                 <div class="box-colors">
                     <select id="btn_colorBalls">
-                        <div id="text_gold">
-                            <option> GOLD </option>
-                        </div>
-                        <option> <span style="color:silver">SILVER</span> </option>
-                        <option> <span style="color:orange">ORANGE</span> </option>
+                        <option> regular </option>
+                        <option> spooky </option>
+                        <option> bloody</option>
                     </select>
                 </div>
                 <div class="box-time">
@@ -745,11 +738,14 @@
     </div>
 </div>
 
-<!--    <div id="wnd_play" class="container_main_game">-->
     <div id="wnd_play" class="container_main_game">
+
         <div class="row">
             <div class="col-sm-4">
                 <span style="color:darkgreen;font-weight:bold">LIVES:</span>
+                <img src="images\\pacDrorAni_right1.svg" id = "life1" style="display:none;height: 25px;width: 25px;">
+                <img src="images\\pacDrorAni_right1.svg" id = "life2" style="display:none;height: 25px;width: 25px;">
+                <img src="images\\pacDrorAni_right1.svg" id = "life3" style="display:none;height: 25px;width: 25px;">
             </div>
             <div class="col-sm-4">
                 <span style="border-style:hidden;color:darkblue;font-weight:bold">SCORE:</span>
@@ -766,9 +762,12 @@
 <!--        <canvas onload="window.onload" id="canvas" height="660" width="600"></canvas>-->
 
 <!--        <canvas id="canvas" height="660" width="600"></canvas>-->
+
             <canvas id="canvas"></canvas>
 
         <script type="text/javascript">
+            // var d_left1 = new Image();
+            // d_left1.src = "images/pacDrorAni_left1.svg";
 
         /**************--------------- load images --------------------*****************/
             //-------------dror right--------------//
@@ -960,10 +959,9 @@
             if (isNaN(timeLimit)) {
                 timeLimit = 60;
             }
-            ballsTheme = parseInt(document.getElementById("btn_colorBalls").value);
-            if (isNaN(ballsTheme)) {
-                ballsTheme = "regular";
-            }
+            var e = document.getElementById("btn_colorBalls");
+            ballsTheme = e.options[e.selectedIndex].value;
+
             ghostNum = parseInt(document.getElementById("btn_amountGhosts").value);
             if (isNaN(ghostNum)) {
                 ghostNum = 3;
@@ -1069,8 +1067,8 @@
         }
 
         function Draw() {
-            context.canvas.width = (window.innerWidth)/1.1;
-            context.canvas.height = (window.innerHeight)/1.1;
+            context.canvas.width = (window.innerWidth);
+            context.canvas.height = (window.innerHeight);
             context.clearRect(0, 0, canvas.width, canvas.height); //clean board
             lblScore.value = score;
             lblTime.value = time_elapsed;
@@ -1432,6 +1430,7 @@
                     shape.j = emptyCell[1];
                     resetBoard();
                 }
+                showLives(pacman_remain);
                 if(gameOverIndication === 1 && pacman_remain===1){
                     pacman_remain-=2;
                 }
@@ -1450,6 +1449,29 @@
             }
         }
 
+
+            function showLives(pacman_remain) {
+                if (pacman_remain===3) {
+                    document.getElementById("life1").style.display = "inline";
+                    document.getElementById( "life2" ).style.display = "inline";
+                    document.getElementById( "life3" ).style.display = "inline";
+                }
+                else if (pacman_remain===2) {
+                    document.getElementById( "life1" ).style.display = "inline";
+                    document.getElementById( "life2" ).style.display = "inline";
+                    document.getElementById( "life3" ).style.display = "none";
+                }
+                else if (pacman_remain===1) {
+                    document.getElementById( "life1" ).style.display = "inline";
+                    document.getElementById( "life2" ).style.display = "none";
+                    document.getElementById( "life3" ).style.display = "none";
+                }
+                else if (pacman_remain===0) {
+                    document.getElementById( "life1" ).style.display = "none";
+                    document.getElementById( "life2" ).style.display = "none";
+                    document.getElementById( "life3" ).style.display = "none";
+                }
+            }
         function getPossibleMoves(x, y, ghostBoard) {
             var movesArray = new Array();
 
