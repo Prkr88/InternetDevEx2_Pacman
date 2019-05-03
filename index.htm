@@ -745,9 +745,13 @@
 </div>
 
     <div id="wnd_play" class="container_main_game">
+
         <div class="row">
             <div class="col-sm-4">
                 <span style="color:darkgreen;font-weight:bold">LIVES:</span>
+                <img src="images\\pacDrorAni_right1.svg" id = "life1" style="display:none;height: 25px;width: 25px;">
+                <img src="images\\pacDrorAni_right1.svg" id = "life2" style="display:none;height: 25px;width: 25px;">
+                <img src="images\\pacDrorAni_right1.svg" id = "life3" style="display:none;height: 25px;width: 25px;">
             </div>
             <div class="col-sm-4">
                 <span style="border-style:hidden;color:darkblue;font-weight:bold">SCORE:</span>
@@ -1032,6 +1036,8 @@
 
                 // context.canvas.width  = window.innerWidth;
                 // context.canvas.height = window.innerHeight;
+
+
 
                 context.clearRect(0, 0, canvas.width, canvas.height); //clean board
                 lblScore.value = score;
@@ -1328,6 +1334,9 @@
                     shape.j = emptyCell[1];
                     resetBoard();
                 }
+
+                showLives(pacman_remain);
+
                 if (gameOverIndication === 1) {
                     window.clearInterval(interval);
                     backgroundMusic.stop();
@@ -1336,6 +1345,29 @@
                     // window.alert("Game Over");
                 } else {
                     Draw();
+                }
+            }
+
+            function showLives(pacman_remain) {
+                if (pacman_remain===3) {
+                    document.getElementById("life1").style.display = "inline";
+                    document.getElementById( "life2" ).style.display = "inline";
+                    document.getElementById( "life3" ).style.display = "inline";
+                }
+                else if (pacman_remain===2) {
+                    document.getElementById( "life1" ).style.display = "inline";
+                    document.getElementById( "life2" ).style.display = "inline";
+                    document.getElementById( "life3" ).style.display = "none";
+                }
+                else if (pacman_remain===1) {
+                    document.getElementById( "life1" ).style.display = "inline";
+                    document.getElementById( "life2" ).style.display = "none";
+                    document.getElementById( "life3" ).style.display = "none";
+                }
+                else if (pacman_remain===0) {
+                    document.getElementById( "life1" ).style.display = "none";
+                    document.getElementById( "life2" ).style.display = "none";
+                    document.getElementById( "life3" ).style.display = "none";
                 }
             }
 
