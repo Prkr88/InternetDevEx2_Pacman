@@ -340,17 +340,19 @@
             init_login_alerts();
             hide_popups();
 
+            show_game_and_settings();
+
             /* validation start */
-            if (uname === 'a' && pass === 'a') {
-                show_game_and_settings();
-            }
-            else {
-                if (!valid_user(uname, pass)) {
-                    resume = false;
-                }
-                if (resume)
-                    show_game_and_settings();
-            }
+            // if (uname === 'a' && pass === 'a') {
+            //     show_game_and_settings();
+            // }
+            // else {
+            //     if (!valid_user(uname, pass)) {
+            //         resume = false;
+            //     }
+            //     if (resume)
+            //         show_game_and_settings();
+            // }
 
         }); // submit_login onClick end
 
@@ -658,9 +660,7 @@
                 </br></br>
                 <label for="subject">Subject</label>
                 <div class="row">
-
                     <div class="col-md-6 mb-3">
-
                         <textarea id="subject" name="subject" placeholder="Type your content here..." style="height:100px;width: 350px;"></textarea>
                     </div>
                     <div class="col-md-6 mb-3">
@@ -681,27 +681,34 @@
             <span class="closeSettingsBtn">&times;</span>
             <h2>Welcome to Settings!</h2>
         </div>
-        <div class="modal-body2 ">
+        <div class="modal-body2">
             <div class="modal-body2 left">
                 <p>Choose keys got movement:</p>
-                <div id = "btn_up" >
+                <div class="col-sm-4" id="btn_up">
                     <p>Up:</p>
                     <input type="text" size="8" id="btn_keyup" style="color:black" readonly>
                 </div>
-                <div id = "btn_right" >
-                    <p>Right:</p>
-                    <input type="text" size="8" id="btn_keyright" style="color:black" readonly>
-                </div>
-                <div id = "btn_left" >
-                <p>Left:</p>
-                <input type="text" size="8" id="btn_keyleft" style="color:black" readonly>
-                </div>
                 <img src="images\\keys2.png" id = "image_keys" style="color:black">
-                <div id = "btn_down" >
-                    <p>Down:</p>
-                    <input type="text" size="8" id="btn_keydown" style="color:black" readonly>
+                <div class="row">
+                    <div class="col-sm-4" id="btn_left">
+                        <p>Left:</p>
+                        <input type="text" size="8" id="btn_keyleft" style="color:black" readonly>
+                    </div>
+                    <div class="col-sm-4">
+                        <p>Down:</p>
+                        <input type="text" size="8" id="btn_keydown" style="color:black" readonly>
+                    </div>
+                    <div class="col-sm-4">
+                        <p>Right:</p>
+                        <input type="text" size="8" id="btn_keyright" style="color:black" readonly>
+                    </div>
                 </div>
-                <button id="btn_random" type="button" class="btn btn-circle lg bg pos-settings-btn-random">Random</button>
+                    <div class="col-sm-4" id = "settings-btns-random">
+                        <button id="btn_random" type="button" class="btn btn-circle lg bg">Random</button>
+                    </div>
+                    <div class="col-sm-4" id = "settings-btns-setplay">
+                        <button id="btn_setplay" type="button" class="btn btn-circle lg bg ">Set&Play</button>
+                    </div>
             </div>
             <div class="modal-body2 right">
                 <div class="box-amount-balls">
@@ -732,28 +739,36 @@
                         <option> 3 </option>
                     </select>
                 </div>
-                <button id="btn_setplay" type="button" class="btn btn-circle lg bg pos-settings-btn-setplay">Set&Play</button>
             </div>
         </div>
     </div>
 </div>
 
-    <div id="wnd_play" class="container_main game">
-        SCORE:
-        <input id="lblScore" type="text"/>
-        <br/>
-        TIME:
-        <input id="lblTime" type="text"/>
-        <br/>
+    <div id="wnd_play" class="container_main_game">
+        <div class="row">
+            <div class="col-sm-4">
+                <span style="color:darkgreen;font-weight:bold">LIVES:</span>
+            </div>
+            <div class="col-sm-4">
+                <span style="border-style:hidden;color:darkblue;font-weight:bold">SCORE:</span>
+                <label> <input id="lblScore" type="text" size="10"> </label>
+            </div>
+            <div class="col-sm-4">
+                <span style="border-style:hidden;color:darkred;font-weight:bold">TIME:</span>
+                <label> <input id="lblTime" type="text" size="10"> </label>
+            </div>
+        </div>
+
 <!--        <iframe src="sounds/mmm.mp3" allow="autoplay" style="display:none" id="iframeAudio">-->
 <!--        </iframe>-->
 <!--        <canvas onload="window.onload" id="canvas" height="660" width="600"></canvas>-->
 
 <!--        <canvas id="canvas" height="660" width="600"></canvas>-->
             <canvas id="canvas"></canvas>
-<!--        <canvas height="660" width="600"></canvas>-->
 
         <script type="text/javascript">
+            // var d_left1 = new Image();
+            // d_left1.src = "images/pacDrorAni_left1.svg";
 
             /**************--------------- load images --------------------*****************/
                 //-------------dror right--------------//
@@ -1005,8 +1020,19 @@
             }
 
             function Draw() {
-                context.canvas.width  = window.innerWidth;
-                context.canvas.height = window.innerHeight;
+                // var canvas = document.getElementsByTagName('canvas');
+                // canvas.width  = 600;
+                // canvas.height = 660;
+                // var ctx = document.getElementsByTagName('canvas')[0];
+                // ctx.canvas.width  = window.innerWidth;
+                // ctx.canvas.height = window.innerHeight;
+
+                context.canvas.width  = 600;
+                context.canvas.height = 660;
+
+                // context.canvas.width  = window.innerWidth;
+                // context.canvas.height = window.innerHeight;
+
                 context.clearRect(0, 0, canvas.width, canvas.height); //clean board
                 lblScore.value = score;
                 lblTime.value = time_elapsed;
