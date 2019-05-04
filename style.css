@@ -121,35 +121,44 @@ nav p:hover::before {
 }
 
 .container_main_game {
-    margin: 0 auto;
+    position: fixed;
+    margin-top: 1%;
+    margin-left: 0;
+    margin-right: 0;
     text-align: center;
-    padding-top: 5%;
+    padding-top: 7%;
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-bottom: 5%;
     height: 100%;
     width: 100%;
-    position: relative;
     background-image: -webkit-linear-gradient(#FFF65C 45%, #9A8000 75%);
     /*text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.09),*/
     /*-1px -1px 0 rgba(255, 220, 0, 0.670);*/
 }
 
-#wnd_play{
-    margin: 0 auto;
-    text-align: center;
-    padding-top: 6%;
-    height: 90%;
-    width: 90%;
-    position: fixed;
-    background-image: -webkit-linear-gradient(#FFF65C 45%, #9A8000 75%);
-    /*text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.09),*/
-    /*-1px -1px 0 rgba(255, 220, 0, 0.670);*/
-}
+/*#wnd_play{*/
+/*    margin: 0 auto;*/
+/*    text-align: center;*/
+/*    padding-top: 2%;*/
+/*    height: 100%;*/
+/*    width: 100%;*/
+/*    position: fixed;*/
+/*    background-image: -webkit-linear-gradient(#FFF65C 45%, #9A8000 75%);*/
+/*    !*text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.09),*!*/
+/*    !*-1px -1px 0 rgba(255, 220, 0, 0.670);*!*/
+/*}*/
 
 canvas {
-    margin-left: 35%;
-    /*height:100%;*/
-    /*width: 100%;*/
-	  padding-top: 10px;
-    padding-bottom: 5%;
+    display: block;
+    position: fixed;
+    padding-top: 1%;
+    padding-left: 20%;
+    /*text-align: center;*/
+    /*align-content: center;*/
+    /*Vertical-align: middle;*/
+    height:100%;
+    width: 100%;
 }
 
 
@@ -195,6 +204,52 @@ canvas {
     border-radius: 150px;
     color: #000;
     border:2px solid;
+}
+#img_log,
+#img_reg{
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 0;
+    padding-right: 0;
+    height: 100px;
+    width: 200px;
+}
+
+.btn-restart {
+    font-weight: bold;
+    background-color: #0472ca;
+    border: none;
+    color: white;
+    /*padding: 10px 20px;*/
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    /*margin: 4px 2px;*/
+    cursor: pointer;
+    border-radius: 25px;
+}
+
+.btn-restart:hover {
+    background-color: rgb(124, 238, 134);
+}
+
+.btn-settings {
+    font-weight: bold;
+    background-color: darkslateblue;
+    border: none;
+    color: white;
+    /*padding: 10px 20px;*/
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    /*margin: 4px 2px;*/
+    cursor: pointer;
+    border-radius: 25px;
+}
+
+.btn-settings:hover {
+    background-color: rgb(124, 238, 134);
 }
 
 .btn-circle.lg.bg {
@@ -255,7 +310,7 @@ canvas {
     position: relative;
     right: 0;
     top: 0;
-    margin-top: 3%;
+    margin-top: 4%;
     margin-right: 5%;
 }
 
@@ -427,7 +482,7 @@ canvas {
 
 .modal-header2 {
     background: midnightblue;
-    padding: 15px;
+    padding: 5px;
     color: #fff;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
@@ -448,7 +503,7 @@ canvas {
 
 #p2 {
     position:relative;
-    margin-top: 20%;
+    margin-left: 1%;
 }
 
 .modal-body2.right {
@@ -595,10 +650,11 @@ canvas {
 }
 
 .box-time {
-    top: 0;
-    /*padding-top: 5%;*/
+    /*margin-top: 0;*/
+    /*top: 0;*/
+    /*padding-top: 0;*/
     right: 6%;
-    height: 8%;
+    /*height: 8%;*/
 }
 
 .box-amount-ghosts {
