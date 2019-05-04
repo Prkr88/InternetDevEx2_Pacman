@@ -1070,8 +1070,8 @@
         }
 
         function Draw() {
-            // context.canvas.width = (window.innerWidth);
-            // context.canvas.height = (window.innerHeight);
+            context.canvas.width = (window.innerWidth) -100;
+            context.canvas.height = (window.innerHeight) - 100;
             context.clearRect(0, 0, canvas.width, canvas.height); //clean board
             lblScore.value = score;
             lblTime.value = time_elapsed;
