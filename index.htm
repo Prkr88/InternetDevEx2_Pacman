@@ -1311,9 +1311,9 @@
                     if (score < 150) {
                         context.drawImage(canDoBetter, 80, 80, 450, 450);
                     } else {
-                        var cnv_t = document.getElementById("canvas");
-                        var context_t = cnv.getContext("2d");
-                        context_t.drawImage(gameOverFig, 80, 80, 450, 450);
+                        // var gameOverFig = new Image();
+                        gameOverFig.src = "images/gameOver.svg";
+                        context.drawImage(gameOverFig, 80, 80, 450, 450);
                     }
 
                 }
