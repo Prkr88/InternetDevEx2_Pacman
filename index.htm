@@ -18,6 +18,8 @@
     <link rel='stylesheet' id='mlestrnge-googlefont-css' href='http://fonts.googleapis.com/css?family=Varela+Round'
           type='text/css' media='all'/>
 
+<!--    <link rel="stylesheet" media="screen and (min-device-width: 1800px)" href="style.css" />-->
+
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
           integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 
@@ -25,6 +27,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src="../../Desktop/סמ ו נבו/סביבות פיתוח באינטרנט/עבודות בסביבות/2/302223979_204439350/js/game.js"></script>
 
 </head>
 
@@ -738,8 +741,8 @@
     </div>
 </div>
 
-<!-- <div id="wnd_play" class="container_main_game"> -->
-<div id="wnd_play">
+ <div id="wnd_play" class="container_main_game">
+<!--<div id="wnd_play">-->
 
     <div class="row">
         <div class="col-sm-4">
@@ -757,14 +760,18 @@
             <label> <input id="lblTime" type="text" size="10"> </label>
         </div>
     </div>
+     <div class="row row-centered">
+         <div class="col-xs-3 col-centered">
+
 
     <!--        <iframe src="sounds/mmm.mp3" allow="autoplay" style="display:none" id="iframeAudio">-->
     <!--        </iframe>-->
     <!--        <canvas onload="window.onload" id="canvas" height="660" width="600"></canvas>-->
+            <canvas id="canvas" height="660" width="600"></canvas>
+<!--             <canvas id="canvas"></canvas>-->
+         </div>
+     </div>
 
-    <!--        <canvas id="canvas" height="660" width="600"></canvas>-->
-
-    <canvas id="canvas"></canvas>
 
     <script type="text/javascript">
         // var d_left1 = new Image();
@@ -1072,6 +1079,10 @@
         function Draw() {
             context.canvas.width = (window.innerWidth);
             context.canvas.height = (window.innerHeight);
+            if  (context.canvas.width <= 1280) {
+                context.canvas.width *= 1.5;
+                context.canvas.height *= 1.75;
+            }
             context.clearRect(0, 0, canvas.width, canvas.height); //clean board
             lblScore.value = score;
             lblTime.value = time_elapsed;
@@ -1633,6 +1644,7 @@
             }
         }
     </script>
+
 </div>
 
 </body>
