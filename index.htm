@@ -952,11 +952,12 @@
         };
 
         function initParams() {
-            numBalls_toRemove = parseInt(document.getElementById("btn_amountBalls").value);
+            var numBalls = parseInt(document.getElementById("btn_amountBalls").value);
             if (isNaN(numBalls_toRemove)) {
-                numBalls_toRemove = 186;
+                numBalls = 186;
             }
-            numBalls_toRemove = 186 - numBalls_toRemove;
+            foodCounter = numBalls;
+            numBalls_toRemove = 186 - numBalls;
             timeLimit = parseInt(document.getElementById("btn_amountTime").value);
             if (isNaN(timeLimit)) {
                 timeLimit = 60;
@@ -1411,7 +1412,7 @@
                 var currentTime = new Date();
                 time_elapsed = (currentTime - start_time) / 1000;
                 time_elapsed = time_elapsed - 3 * (4 - pacman_remain);
-                if (foodCounter === numBalls_toRemove) {
+                if (foodCounter === 0) {
                     backgroundMusic.stop();
                     gameCompleteSound.play();
                     window.clearInterval(interval);
