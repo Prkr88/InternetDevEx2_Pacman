@@ -27,7 +27,6 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-    <script src="../../Desktop/סמ ו נבו/סביבות פיתוח באינטרנט/עבודות בסביבות/2/302223979_204439350/js/game.js"></script>
 
 </head>
 
@@ -1312,7 +1311,9 @@
                     if (score < 150) {
                         context.drawImage(canDoBetter, 80, 80, 450, 450);
                     } else {
-                        context.drawImage(gameOverFig, 80, 80, 450, 450);
+                        var cnv_t = document.getElementById("canvas");
+                        var context_t = cnv.getContext("2d");
+                        context_t.drawImage(gameOverFig, 80, 80, 450, 450);
                     }
 
                 }
