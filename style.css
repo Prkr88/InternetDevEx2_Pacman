@@ -134,8 +134,8 @@ nav p:hover::before {
 
 canvas {
     margin-left: 0%;
-    height:50%;
-    width: 50%;
+/*     height:50%;
+    width: 50%; */
     padding-top: 2%;
     padding-bottom: 5%;
 }
