@@ -666,7 +666,7 @@
             </form>
         </div>
         <div class="modal-footer">
-            <h3>Go on and stary playing!</h3>
+            <h3>Go on and start playing!</h3>
         </div>
     </div>
 </div>
@@ -740,7 +740,8 @@
     </div>
 </div>
 
-<div id="wnd_play" class="container_main_game">
+<!-- <div id="wnd_play" class="container_main_game"> -->
+<div id="wnd_play">
 
     <div class="row">
         <div class="col-sm-4">
@@ -1070,8 +1071,8 @@
         }
 
         function Draw() {
-            // context.canvas.width = (window.innerWidth);
-            // context.canvas.height = (window.innerHeight);
+            context.canvas.width = (window.innerWidth);
+            context.canvas.height = (window.innerHeight);
             context.clearRect(0, 0, canvas.width, canvas.height); //clean board
             lblScore.value = score;
             lblTime.value = time_elapsed;
