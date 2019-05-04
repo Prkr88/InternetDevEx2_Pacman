@@ -1085,18 +1085,25 @@
             shape.j = emptyCell[1];
             resetBoard();
             direction = 0;
-            if (gameOverIndication === 1 || foodCounter === numBalls) {
-                gameOverIndication = 0;
-                if(gameStoped === 1 ){
-                    gameStoped=0;
-                    interval = setInterval(UpdatePosition, 50);
-                }
-            }
+            pacman_remain = 3;
+            time_elapsed = -3;
+            lblTime.value = 0;
+            score = 0;
+            skullVisible = 0;
+            starter = 3;
+            // if (gameOverIndication === 1 || foodCounter === numBalls) {
+            //     gameOverIndication = 0;
+            //     if(gameStoped === 1 ){
+            //         gameStoped=0;
+            interval = setInterval(UpdatePosition, 50);
+                // }
+            // }
         }
 
         function Start() {
             // board = new Array();
             score = 0;
+            lblTime.value = 0 ;
             pac_color = "yellow";
             var cnt = 100;
             start_time = new Date();
@@ -1191,7 +1198,9 @@
             }
             context.clearRect(0, 0, canvas.width, canvas.height); //clean board
             lblScore.value = score;
-            lblTime.value = time_elapsed;
+            if(time_elapsed>0){
+                lblTime.value = time_elapsed;
+            }
             if (time_elapsed > timeLimit) {
                 gameOverIndication = 1;
             }
