@@ -135,7 +135,7 @@ nav p:hover::before {
 #wnd_play{
     margin: 0 auto;
     text-align: center;
-    padding-top: 6%;
+    padding-top: 2%;
     height: 90%;
     width: 90%;
     position: fixed;
@@ -148,7 +148,7 @@ canvas {
     margin-left: 35%;
     /*height:100%;*/
     /*width: 100%;*/
-	  padding-top: 10px;
+	  padding-top: 5px;
     padding-bottom: 5%;
 }
 
