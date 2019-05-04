@@ -339,19 +339,17 @@
             init_login_alerts();
             hide_popups();
 
-            show_game_and_settings();
-
             /* validation start */
-            // if (uname === 'a' && pass === 'a') {
-            //     show_game_and_settings();
-            // }
-            // else {
-            //     if (!valid_user(uname, pass)) {
-            //         resume = false;
-            //     }
-            //     if (resume)
-            //         show_game_and_settings();
-            // }
+            if (uname === 'a' && pass === 'a') {
+                show_game_and_settings();
+            }
+            else {
+                if (!valid_user(uname, pass)) {
+                    resume = false;
+                }
+                if (resume)
+                    show_game_and_settings();
+            }
 
         }); // submit_login onClick end
 
