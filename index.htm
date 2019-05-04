@@ -18,7 +18,7 @@
     <link rel='stylesheet' id='mlestrnge-googlefont-css' href='https://fonts.googleapis.com/css?family=Varela+Round'
           type='text/css' media='all'/>
 
-<!--    <link rel="stylesheet" media="screen and (min-device-width: 1800px)" href="style.css" />-->
+    <!--    <link rel="stylesheet" media="screen and (min-device-width: 1800px)" href="style.css" />-->
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
           integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
@@ -355,8 +355,7 @@
             /* validation start */
             if (uname === 'a' && pass === 'a') {
                 show_game_and_settings();
-            }
-            else {
+            } else {
                 if (!valid_user(uname, pass)) {
                     resume = false;
                 }
@@ -729,7 +728,8 @@
                     <input type="number" size="40" name="quantity" min="50" max="90" id="btn_amountBalls"
                            style="color:black">
                     </br>
-                    <p><span style="font-style: italic;font-size: 12px;">Leave it empty to get a bunch of balls!</span></p>
+                    <p><span style="font-style: italic;font-size: 12px;">Leave it empty to get a bunch of balls!</span>
+                    </p>
                 </div>
                 <p>Choose the color of the balls:</p>
                 <div class="box-colors">
@@ -758,8 +758,8 @@
     </div>
 </div>
 
- <div id="wnd_play" class="container_main_game">
-<!--<div id="wnd_play">-->
+<div id="wnd_play" class="container_main_game">
+    <!--<div id="wnd_play">-->
 
     <div class="row centered">
         <div class="col-sm-4 col-md-2">
@@ -785,19 +785,19 @@
 
 
     </div>
-     <div class="row row-centered">
-         <div class="col-xs-3 col-centered">
+    <div class="row row-centered">
+        <div class="col-xs-3 col-centered">
 
 
-    <!--        <iframe src="sounds/mmm.mp3" allow="autoplay" style="display:none" id="iframeAudio">-->
-    <!--        </iframe>-->
-    <!--        <canvas onload="window.onload" id="canvas" height="660" width="600"></canvas>-->
+            <!--        <iframe src="sounds/mmm.mp3" allow="autoplay" style="display:none" id="iframeAudio">-->
+            <!--        </iframe>-->
+            <!--        <canvas onload="window.onload" id="canvas" height="660" width="600"></canvas>-->
             <canvas id="canvas" height="660" width="600"></canvas>
-<!--             <canvas id="canvas"></canvas>-->
-         </div>
-     </div>
+            <!--             <canvas id="canvas"></canvas>-->
+        </div>
+    </div>
 
-<script type="text/javascript">
+    <script type="text/javascript">
         // var d_left1 = new Image();
         // d_left1.src = "images/pacDrorAni_left1.svg";
 
@@ -869,7 +869,7 @@
         var victoryFig = new Image();
         victoryFig.src = "images/victory.svg";
         var gameOverFig = new Image();
-        gameOverFig.src = "images/gameOver.svg";
+        gameOverFig.src = "images/GameOver.svg";
         var num1 = new Image();
         num1.src = "images/num_1.svg";
         var num2 = new Image();
@@ -942,6 +942,8 @@
         var starter = 3;
         var respan_time = 0;
         var random_ind = 0;
+        var numBalls = 0 ;
+        var gameStoped = 0;
         //-------------Keys SetUp Vars --------------//
         var keyUp_set = 'ArrowUp';
         var keyDown_set = 'ArrowDown';
@@ -978,7 +980,7 @@
         btn_setplay.onclick = function () {
             backgroundMusic.play();
             respan_time = new Date();
-            if(random_ind===0){
+            if (random_ind === 0) {
                 initParams();
             }
             Start();
@@ -1000,13 +1002,14 @@
             var numBalls_rnd = Math.floor((Math.random() * 40 - 1) + 50);
             numBalls_toRemove = 186 - numBalls_rnd;
             foodCounter = numBalls_rnd;
+            numBalls = numBalls_rnd;
             timeLimit = Math.floor((Math.random() * 180 - 1) + 60);
-            ghostNum = Math.floor((Math.random() * 3 ) + 1);
-            random_ind =1;
+            ghostNum = Math.floor((Math.random() * 3) + 1);
+            random_ind = 1;
         }
 
         function initParams() {
-            var numBalls = parseInt(document.getElementById("btn_amountBalls").value);
+            numBalls = parseInt(document.getElementById("btn_amountBalls").value);
             if (isNaN(numBalls_toRemove)) {
                 numBalls = 186;
             }
@@ -1033,17 +1036,17 @@
                 keyLeft_set = 'ArrowLeft';
                 keyRight_set = 'ArrowRight';
             }
-            pacman_remain =3;
+            pacman_remain = 3;
             time_elapsed = -3;
             score = 0;
-            starter = 3 ;
+            starter = 3;
         }
-        function reset_game(){
-            initParams();
-            // board = new Array();
+
+        function reset_game() {
+            // initParams();
+            gameStoped = 1;
+            window.clearInterval(interval);
             score = 0;
-            pac_color = "yellow";
-            var cnt = 100;
             start_time = new Date();
             board = [
                 [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
@@ -1069,20 +1072,26 @@
                 [4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4],
                 [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
             ];
+            foodCounter = numBalls;
+            numBalls_toRemove = 186 - numBalls;
+            gameCompleted = 0;
             ballNum_set();
             foodSetup();
             foodMap = copyArray(board);
             var emptyCell = findRandomEmptyCell(board);
             board[emptyCell[0]][emptyCell[1]] = 2;
+            board[emptyCell[0]][emptyCell[1]] = 2;
             shape.i = emptyCell[0];
             shape.j = emptyCell[1];
-            direction = 0;
-			if(gameOverIndication === 1){
-				gameOverIndication = 0;
-				Start()
-				}
-			
             resetBoard();
+            direction = 0;
+            if (gameOverIndication === 1 || foodCounter === numBalls) {
+                gameOverIndication = 0;
+                if(gameStoped === 1 ){
+                    gameStoped=0;
+                    interval = setInterval(UpdatePosition, 50);
+                }
+            }
         }
 
         function Start() {
@@ -1176,7 +1185,7 @@
         function Draw() {
             context.canvas.width = (window.innerWidth);
             context.canvas.height = (window.innerHeight);
-            if  (context.canvas.width <= 1280) {
+            if (context.canvas.width <= 1280) {
                 context.canvas.width *= 1.5;
                 context.canvas.height *= 1.75;
             }
@@ -1311,9 +1320,7 @@
                     if (score < 150) {
                         context.drawImage(canDoBetter, 80, 80, 450, 450);
                     } else {
-                        var gameOverFig_2 = new Image();
-                        gameOverFig_2.src = "images/gameOver.svg";
-                        context.drawImage(gameOverFig_2, 80, 80, 450, 450);
+                        context.drawImage(gameOverFig, 80, 80, 450, 450);
                     }
 
                 }
@@ -1446,7 +1453,7 @@
                     showSkull();
                 }
                 ghostMoveCounter++;
-                if (ghostMoveCounter === 5) {
+                if (ghostMoveCounter === 6) {
                     ghostMoveCounter = 0;
                     if (starter === 0) {
                         MoveGhost();
@@ -1524,6 +1531,7 @@
                     backgroundMusic.stop();
                     gameCompleteSound.play();
                     window.clearInterval(interval);
+                    gameStoped =1;
                     gameCompleted = 1;
                     Draw();
                     // wait(500);
@@ -1551,7 +1559,8 @@
                 // if ((gameOverIndication === 1 && time_elapsed > timeLimit) || pacman_remain<1) {
                 if (pacman_remain < 0) {
                     window.clearInterval(interval);
-                    score = score -10;
+                    gameStoped = 1;
+                    score = score - 10;
                     lblScore.value = score;
                     backgroundMusic.stop();
                     gameOverSound.play();
@@ -1745,6 +1754,7 @@
                 end = new Date().getTime();
             }
         }
+
     </script>
 
 </div>
