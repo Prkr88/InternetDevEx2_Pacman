@@ -942,7 +942,7 @@
         var starter = 3;
         var respan_time = 0;
         var random_ind = 0;
-        var numBalls = 0 ;
+        var numBalls = 0;
         var gameStoped = 0;
         //-------------Keys SetUp Vars --------------//
         var keyUp_set = 'ArrowUp';
@@ -1075,6 +1075,7 @@
             foodCounter = numBalls;
             numBalls_toRemove = 186 - numBalls;
             gameCompleted = 0;
+            gameOverIndication = 0;
             ballNum_set();
             foodSetup();
             foodMap = copyArray(board);
@@ -1096,14 +1097,14 @@
             //     if(gameStoped === 1 ){
             //         gameStoped=0;
             interval = setInterval(UpdatePosition, 50);
-                // }
+            // }
             // }
         }
 
         function Start() {
             // board = new Array();
             score = 0;
-            lblTime.value = 0 ;
+            lblTime.value = 0;
             pac_color = "yellow";
             var cnt = 100;
             start_time = new Date();
@@ -1139,6 +1140,8 @@
             shape.i = emptyCell[0];
             shape.j = emptyCell[1];
             keysDown = {};
+            ghostNum = 0;
+            console.log(foodCounter);
             addEventListener("keydown", function (e) {
                 keysDown[e.code] = true;
             }, false);
@@ -1198,7 +1201,7 @@
             }
             context.clearRect(0, 0, canvas.width, canvas.height); //clean board
             lblScore.value = score;
-            if(time_elapsed>0){
+            if (time_elapsed > 0) {
                 lblTime.value = time_elapsed;
             }
             if (time_elapsed > timeLimit) {
@@ -1395,7 +1398,19 @@
                 }
             }
         }
-
+        function countFoodInBoard() {
+            var counter =0;
+            for (var i = 0; i < BOARD_HEIGHT; i++) {
+                for (var j = 0; j < BOARD_WIDTH; j++) {
+                    if (board[i][j] === 1 || board[i][j] === 8 || board[i][j] === 9) {
+                        counter++;
+                    }
+                }
+            }
+            if(counter === 0){
+                foodCounter=0;
+            }
+        }
         function resetBoard() {
             for (var i = 0; i < BOARD_HEIGHT; i++) {
                 for (var j = 0; j < BOARD_WIDTH; j++) {
@@ -1470,6 +1485,7 @@
                 }
                 checkGameOver();
                 GetKeyPressed();
+                countFoodInBoard();
                 board[shape.i][shape.j] = 0;
                 foodMap[shape.i][shape.j] = 0;
                 ghostScanboard_init[shape.i][shape.j] = 0;
@@ -1516,13 +1532,18 @@
                     score = score + 5;
                     eatHatzir.play();
                     foodCounter--;
-                } else if (board[shape.i][shape.j] === 8) {
+                    console.log(foodCounter);
+                }
+                if (board[shape.i][shape.j] === 8) {
                     score = score + 15;
                     foodCounter--;
-                } else if (board[shape.i][shape.j] === 9) {
+                    console.log(foodCounter);
+                }
+                if (board[shape.i][shape.j] === 9) {
                     score = score + 25;
                     tetet.play();
                     foodCounter--;
+                    console.log(foodCounter);
                 }
                 if (catchedTheSkull_indication === 1 || board[shape.i][shape.j] === 10) {
                     catchedTheSkull_indication = 0;
@@ -1540,7 +1561,7 @@
                     backgroundMusic.stop();
                     gameCompleteSound.play();
                     window.clearInterval(interval);
-                    gameStoped =1;
+                    gameStoped = 1;
                     gameCompleted = 1;
                     Draw();
                     // wait(500);
@@ -1560,6 +1581,7 @@
                     shape.j = emptyCell[1];
                     direction = 0;
                     resetBoard();
+
                 }
                 showLives(pacman_remain);
                 if (gameOverIndication === 1 && pacman_remain === 1) {
