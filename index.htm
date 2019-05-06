@@ -797,7 +797,8 @@
         </div>
     </div>
 
-    <script type="text/javascript">
+    <script id="game_script" type="text/javascript">
+
         // var d_left1 = new Image();
         // d_left1.src = "images/pacDrorAni_left1.svg";
 
@@ -944,6 +945,7 @@
         var random_ind = 0;
         var numBalls = 0;
         var gameStoped = 0;
+        var inGameWindow = 1;
         //-------------Keys SetUp Vars --------------//
         var keyUp_set = 'ArrowUp';
         var keyDown_set = 'ArrowDown';
@@ -975,10 +977,26 @@
             [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
         ];
 
-
+        var rel = document.getElementById("btn_login");
+        rel.onclick = function () {
+            game_stop();
+        };
+        var rel2 = document.getElementById("btn_register");
+        rel2.onclick = function () {
+            game_stop();
+        };
+        var rel3 = document.getElementById("btn_about");
+        rel3.onclick = function () {
+            game_stop();
+        };
+        var re4 = document.getElementById("btn_welcome");
+        rel.onclick = function () {
+            game_stop();
+        };
         var btn_setplay = document.getElementById("btn_setplay");
         btn_setplay.onclick = function () {
             backgroundMusic.play();
+            inGameWindow =1;
             respan_time = new Date();
             if (random_ind === 0) {
                 initParams();
@@ -989,6 +1007,7 @@
         var rand_play = document.getElementById("btn_random");
         rand_play.onclick = function () {
             backgroundMusic.play();
+            inGameWindow =1;
             setRandom();
             respan_time = new Date();
             Start();
@@ -1040,6 +1059,12 @@
             time_elapsed = -3;
             score = 0;
             starter = 3;
+        }
+        function  game_stop(){
+            inGameWindow = 0;
+            window.clearInterval(interval);
+            backgroundMusic.stop();
+            reset_game();
         }
 
         function reset_game() {
@@ -1096,7 +1121,9 @@
             //     gameOverIndication = 0;
             //     if(gameStoped === 1 ){
             //         gameStoped=0;
-            interval = setInterval(UpdatePosition, 50);
+            if(inGameWindow ===1){
+                interval = setInterval(UpdatePosition, 50);
+            }
             // }
             // }
         }
@@ -1456,7 +1483,7 @@
         }
 
         function UpdatePosition() {
-            if (starter === 0) {
+            if (starter === 0 && inGameWindow ===1) {
                 backgroundMusic.play();
                 var showSkullChance = Math.floor((Math.random() * 200 - 1) + 2);
                 if (skullVisible === 1) {
