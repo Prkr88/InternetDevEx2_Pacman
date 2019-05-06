@@ -364,7 +364,7 @@
         }
 
         function show_game() {
-            $("#wnd_settings").hide();
+            // $("#wnd_settings").hide();
             // amount_balls = document.getElementById('btn_amountBalls').value;
             // amount_time = document.getElementById('btn_amountTime').value;
             // if (amount_balls === '' || amount_time === '' || key_up === '' || key_down === '' || key_left === '' || key_right === '') {
@@ -1069,7 +1069,7 @@
                 $("#alert_play").html(msg).show();
             }
             else {
-                // $("#wnd_settings").hide();
+                $("#wnd_settings").hide();
                 backgroundMusic.play();
                 inGameWindow = 1;
                 respan_time = new Date();
@@ -1088,6 +1088,7 @@
             inGameWindow =1;
             setRandom();
             respan_time = new Date();
+            $("#wnd_settings").hide();
             Start();
         };
 
