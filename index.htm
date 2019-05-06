@@ -72,15 +72,20 @@
         var msg = "";
         var curr_user = "";
 
-        var key_up;
-        var key_down;
-        var key_left;
-        var key_right;
+        var key_up = '';
+        var key_down = '';
+        var key_left = '';
+        var key_right = '';
 
-        var amount_balls;
-        var color_balls;
-        var amount_time;
-        var amount_ghosts;
+        var amount_balls = '';
+        var color_balls = '';
+        var amount_time = '';
+        var amount_ghosts = '';
+
+        var count_btn_balls = 0;
+        var input_btn_balls = '';
+        var count_btn_time = 0;
+        var input_btn_time = '';
 
         /* init modal windows */
 
@@ -177,6 +182,50 @@
         document.getElementById("btn_keyright").onkeydown = function (e) {
             key_right = e.code;
             document.getElementById('btn_keyright').value = e.code;
+        };
+
+        document.getElementById("btn_amountBalls").onkeyup = function (e) {
+            if (count_btn_balls === 1) {
+                try {
+                    var entry = e.key;
+                    var entry2 = input_btn_balls.toString() + entry.toString();
+                    var num = parseInt(entry2);
+                    if (num < 50 || num > 90)
+                        document.getElementById("btn_amountBalls").value = '';
+                    else
+                        document.getElementById("btn_amountBalls").value = entry2;
+                    count_btn_balls = 0;
+                }
+                catch(error) {
+                    count_btn_balls = 0;
+                }
+            }
+            else {
+                count_btn_balls += 1;
+                input_btn_balls = e.key;
+            }
+        };
+
+        document.getElementById("btn_amountTime").onkeyup = function (e) {
+            if (count_btn_time === 1) {
+                try {
+                    var entry = e.key;
+                    var entry2 = input_btn_time.toString() + entry.toString();
+                    var num = parseInt(entry2);
+                    if (num < 60)
+                        document.getElementById("btn_amountTime").value = '';
+                    else
+                        document.getElementById("btn_amountTime").value = entry2;
+                    count_btn_time = 0;
+                }
+                catch(error) {
+                    count_btn_time = 0;
+                }
+            }
+            else {
+                count_btn_time += 1;
+                input_btn_time = e.key;
+            }
         };
 
         function valid_input_keys() {
@@ -306,37 +355,50 @@
         }
 
         function show_game_and_settings() {
+            $("#popup_play").hide();
+            $("#alert_play").empty();
             hide_windows();
             $("#wnd_play").show();
             modal_settings.style.display = 'block';
+            // document.getElementById("btn_setplay").disabled = true;
         }
 
         function show_game() {
-            if (!valid_input_keys())
-                set_default_keys();
-            else {
-                list_keys[0] = key_up;
-                list_keys[1] = key_down;
-                list_keys[2] = key_left;
-                list_keys[3] = key_right;
-                // list_keys[3] = key_right.value.substring(0, 1).charCodeAt(0);
-            }
-            if (amount_balls === '')
-                amount_balls = 70;
-            else
-                amount_balls = document.getElementById('btn_amountBalls').value;
-
-            if (amount_time === '')
-                amount_time = 60;
-            else
-                amount_time = document.getElementById('btn_amountTime').value;
-
-            if (amount_ghosts === '')
-                amount_ghosts = 3;
-            else
-                amount_ghosts = document.getElementById('btn_amountGhosts').value;
-
             $("#wnd_settings").hide();
+            // amount_balls = document.getElementById('btn_amountBalls').value;
+            // amount_time = document.getElementById('btn_amountTime').value;
+            // if (amount_balls === '' || amount_time === '' || key_up === '' || key_down === '' || key_left === '' || key_right === '') {
+            //     msg = "Please choose your keys first or just click Random to play!";
+            //     $("#popup_play").show();
+            //     $("#alert_play").html(msg).show();
+            // }
+            // else
+            //     $("#wnd_settings").hide();
+            // if (!valid_input_keys())
+            //     set_default_keys();
+            // else {
+            //     list_keys[0] = key_up;
+            //     list_keys[1] = key_down;
+            //     list_keys[2] = key_left;
+            //     list_keys[3] = key_right;
+            //     // list_keys[3] = key_right.value.substring(0, 1).charCodeAt(0);
+            // }
+            // if (amount_balls === '')
+            //     amount_balls = 70;
+            // else
+            //     amount_balls = document.getElementById('btn_amountBalls').value;
+            //
+            // if (amount_time === '')
+            //     amount_time = 60;
+            // else
+            //     amount_time = document.getElementById('btn_amountTime').value;
+            //
+            // if (amount_ghosts === '')
+            //     amount_ghosts = 3;
+            // else
+            //     amount_ghosts = document.getElementById('btn_amountGhosts').value;
+
+            // $("#wnd_settings").hide();
 
         }
 
@@ -718,6 +780,7 @@
                 <div class="col-sm-4" id="settings-btns-random">
                     <button id="btn_random" type="button" class="btn btn-circle lg bg">Random</button>
                 </div>
+                <div class="popup" id="popup_play"><span class="popuptext" id="alert_play" style="font-weight: bold"></span></div>
                 <div class="col-sm-4" id="settings-btns-setplay">
                     <button id="btn_setplay" type="button" class="btn btn-circle lg bg ">Set&Play</button>
                 </div>
@@ -725,8 +788,7 @@
             <div class="modal-body2 right">
                 <div class="box-amount-balls">
                     <p>Choose amount of balls 50-90:</p>
-                    <input type="number" size="40" name="quantity" min="50" max="90" id="btn_amountBalls"
-                           style="color:black">
+                    <input type="number" name="quantity" min="50" max="90" id="btn_amountBalls" style="color:black;width: 7em">
                     </br>
                     <p><span style="font-style: italic;font-size: 12px;">Leave it empty to get a bunch of balls!</span>
                     </p>
@@ -741,8 +803,8 @@
                 </div>
                 <div class="box-time">
                     <p>Choose amount of time (at least 60 seconds):</p>
-                    <input type="number" size="40" name="quantity" min="60" max="" id="btn_amountTime"
-                           style="color:black">
+                    <input type="number"name="quantity" min="60" max="" id="btn_amountTime"
+                           style="color:black;width: 7em">
                 </div>
                 </br>
                 <p>Choose amount of ghosts:</p>
@@ -977,8 +1039,8 @@
             [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
         ];
 
-        var rel = document.getElementById("btn_login");
-        rel.onclick = function () {
+        var rel1 = document.getElementById("btn_login");
+        rel1.onclick = function () {
             game_stop();
         };
         var rel2 = document.getElementById("btn_register");
@@ -989,19 +1051,35 @@
         rel3.onclick = function () {
             game_stop();
         };
-        var re4 = document.getElementById("btn_welcome");
-        rel.onclick = function () {
+        var rel4 = document.getElementById("btn_welcome");
+        rel4.onclick = function () {
             game_stop();
         };
         var btn_setplay = document.getElementById("btn_setplay");
         btn_setplay.onclick = function () {
-            backgroundMusic.play();
-            inGameWindow =1;
-            respan_time = new Date();
-            if (random_ind === 0) {
-                initParams();
+            amount_balls = document.getElementById('btn_amountBalls').value;
+            amount_time = document.getElementById('btn_amountTime').value;
+            keyUp_set = document.getElementById("btn_keyup").value;
+            keyDown_set = document.getElementById("btn_keydown").value;
+            keyLeft_set = document.getElementById("btn_keyleft").value;
+            keyRight_set = document.getElementById("btn_keyright").value;
+            if (amount_balls === '' || amount_time === '' || keyUp_set === '' || keyDown_set === '' || keyLeft_set === '' || keyRight_set === '') {
+                msg = "Please choose your keys first or just click Random to play!";
+                $("#popup_play").show();
+                $("#alert_play").html(msg).show();
             }
-            Start();
+            else {
+                // $("#wnd_settings").hide();
+                backgroundMusic.play();
+                inGameWindow = 1;
+                respan_time = new Date();
+                if (random_ind === 0) {
+                    initParams();
+                }
+                cnv = document.getElementById("canvas");
+                context = cnv.getContext("2d");
+                Start();
+            }
         };
 
         var rand_play = document.getElementById("btn_random");
@@ -1219,164 +1297,166 @@
         }
 
         function Draw() {
-            context.canvas.width = (window.innerWidth);
-            context.canvas.height = (window.innerHeight);
-            if (context.canvas.width <= 1280) {
-                context.canvas.width *= 1.5;
-                context.canvas.height *= 1.75;
-            }
-            context.clearRect(0, 0, canvas.width, canvas.height); //clean board
-            lblScore.value = score;
-            if (time_elapsed > 0) {
-                lblTime.value = time_elapsed;
-            }
-            if (time_elapsed > timeLimit) {
-                gameOverIndication = 1;
-            }
-            for (var i = 0; i < BOARD_HEIGHT; i++) {
-                for (var j = 0; j < BOARD_WIDTH; j++) {
-                    var center = new Object();
-                    center.x = j * SIZE;
-                    center.y = i * SIZE;
-                    if (board[i][j] === 2) {
-                        context.fillStyle = "#000000";
-                        context.fillRect(center.x, center.y, SIZE, SIZE);
-                        context.drawImage(floor, center.x, center.y, SIZE, SIZE);
+            if(inGameWindow ===1) {
+                context.canvas.width = (window.innerWidth);
+                context.canvas.height = (window.innerHeight);
+                if (context.canvas.width <= 1280) {
+                    context.canvas.width *= 1.5;
+                    context.canvas.height *= 1.75;
+                }
+                context.clearRect(0, 0, canvas.width, canvas.height); //clean board
+                lblScore.value = score;
+                if (time_elapsed > 0) {
+                    lblTime.value = time_elapsed;
+                }
+                if (time_elapsed > timeLimit) {
+                    gameOverIndication = 1;
+                }
+                for (var i = 0; i < BOARD_HEIGHT; i++) {
+                    for (var j = 0; j < BOARD_WIDTH; j++) {
+                        var center = new Object();
+                        center.x = j * SIZE;
+                        center.y = i * SIZE;
+                        if (board[i][j] === 2) {
+                            context.fillStyle = "#000000";
+                            context.fillRect(center.x, center.y, SIZE, SIZE);
+                            context.drawImage(floor, center.x, center.y, SIZE, SIZE);
 
-                        if (drorSpeedController === 0) {
-                            if (drorMotionIndex === 2) {
-                                drorToDraw = DrorRight[animationCounter % 4];
-                            } else if (drorMotionIndex === 1) {
-                                drorToDraw = DrorLeft[animationCounter % 4];
-                            } else if (drorMotionIndex === 3) {
-                                drorToDraw = DrorUp[animationCounter % 4];
-                            } else if (drorMotionIndex === 4) {
-                                drorToDraw = DrorDown[animationCounter % 4];
+                            if (drorSpeedController === 0) {
+                                if (drorMotionIndex === 2) {
+                                    drorToDraw = DrorRight[animationCounter % 4];
+                                } else if (drorMotionIndex === 1) {
+                                    drorToDraw = DrorLeft[animationCounter % 4];
+                                } else if (drorMotionIndex === 3) {
+                                    drorToDraw = DrorUp[animationCounter % 4];
+                                } else if (drorMotionIndex === 4) {
+                                    drorToDraw = DrorDown[animationCounter % 4];
+                                }
+                                if (animationSpeed % 2 === 0) {
+                                    animationCounter++;
+                                }
                             }
-                            if (animationSpeed % 2 === 0) {
-                                animationCounter++;
-                            }
-                        }
-                        // context.drawImage(dror,0, 0, SIZE, SIZE);
-                        context.drawImage(drorToDraw, center.x, center.y, SIZE, SIZE);
+                            // context.drawImage(dror,0, 0, SIZE, SIZE);
+                            context.drawImage(drorToDraw, center.x, center.y, SIZE, SIZE);
 
-                    } else if (board[i][j] === 1) {
-                        context.fillStyle = "#000000";
-                        context.fillRect(center.x, center.y, SIZE, SIZE);
-                        context.drawImage(floor, center.x, center.y, SIZE, SIZE);
-                        context.drawImage(food_simple, center.x, center.y, SIZE, SIZE);
+                        } else if (board[i][j] === 1) {
+                            context.fillStyle = "#000000";
+                            context.fillRect(center.x, center.y, SIZE, SIZE);
+                            context.drawImage(floor, center.x, center.y, SIZE, SIZE);
+                            context.drawImage(food_simple, center.x, center.y, SIZE, SIZE);
 
-                    } else if (board[i][j] === 8) {
-                        context.fillStyle = "#000000";
-                        context.fillRect(center.x, center.y, SIZE, SIZE);
-                        context.drawImage(floor, center.x, center.y, SIZE, SIZE);
-                        context.drawImage(diamond, center.x, center.y, SIZE, SIZE);
+                        } else if (board[i][j] === 8) {
+                            context.fillStyle = "#000000";
+                            context.fillRect(center.x, center.y, SIZE, SIZE);
+                            context.drawImage(floor, center.x, center.y, SIZE, SIZE);
+                            context.drawImage(diamond, center.x, center.y, SIZE, SIZE);
 
-                    } else if (board[i][j] === 9) {
-                        context.fillStyle = "#000000";
-                        context.fillRect(center.x, center.y, SIZE, SIZE);
-                        context.drawImage(floor, center.x, center.y, SIZE, SIZE);
-                        context.drawImage(food_special, center.x, center.y, SIZE, SIZE);
+                        } else if (board[i][j] === 9) {
+                            context.fillStyle = "#000000";
+                            context.fillRect(center.x, center.y, SIZE, SIZE);
+                            context.drawImage(floor, center.x, center.y, SIZE, SIZE);
+                            context.drawImage(food_special, center.x, center.y, SIZE, SIZE);
 
-                    } else if (board[i][j] === 4) {
-                        context.drawImage(wall, center.x, center.y, SIZE, SIZE);
-                    } else if (board[i][j] === 0) {
-                        context.fillStyle = "#000000";
-                        context.fillRect(center.x, center.y, SIZE, SIZE);
+                        } else if (board[i][j] === 4) {
+                            context.drawImage(wall, center.x, center.y, SIZE, SIZE);
+                        } else if (board[i][j] === 0) {
+                            context.fillStyle = "#000000";
+                            context.fillRect(center.x, center.y, SIZE, SIZE);
 
-                    } else if (board[i][j] === 5) {
-                        // context.strokeStyle = "0";
-                        context.fillStyle = "#000000";
-                        context.fillRect(center.x, center.y, SIZE, SIZE);
-                        // context.strokeRect(center.x, center.y, SIZE, SIZE);
-                        context.drawImage(floor, center.x, center.y, SIZE, SIZE);
-                        // context.beginPath();
-                        // context.arc(center.x + SIZE / 2, center.y + SIZE / 2, SIZE / 6, 0, 2 * Math.PI); // circle
-                        // context.fillStyle = "#b61381"; //color
-                        // context.fill();
-                        context.drawImage(g_1, center.x, center.y, SIZE, SIZE);
+                        } else if (board[i][j] === 5) {
+                            // context.strokeStyle = "0";
+                            context.fillStyle = "#000000";
+                            context.fillRect(center.x, center.y, SIZE, SIZE);
+                            // context.strokeRect(center.x, center.y, SIZE, SIZE);
+                            context.drawImage(floor, center.x, center.y, SIZE, SIZE);
+                            // context.beginPath();
+                            // context.arc(center.x + SIZE / 2, center.y + SIZE / 2, SIZE / 6, 0, 2 * Math.PI); // circle
+                            // context.fillStyle = "#b61381"; //color
+                            // context.fill();
+                            context.drawImage(g_1, center.x, center.y, SIZE, SIZE);
 
-                    } else if (board[i][j] === 6) {
-                        // context.strokeStyle = "0";
-                        context.fillStyle = "#000000";
-                        context.fillRect(center.x, center.y, SIZE, SIZE);
-                        // context.strokeRect(center.x, center.y, SIZE, SIZE);
-                        context.drawImage(floor, center.x, center.y, SIZE, SIZE);
-                        // context.beginPath();
-                        // context.arc(center.x + SIZE / 2, center.y + SIZE / 2, SIZE / 6, 0, 2 * Math.PI); // circle
-                        // context.fillStyle = "#523b2f"; //color
-                        // context.fill();
-                        context.drawImage(g_2, center.x, center.y, SIZE, SIZE);
+                        } else if (board[i][j] === 6) {
+                            // context.strokeStyle = "0";
+                            context.fillStyle = "#000000";
+                            context.fillRect(center.x, center.y, SIZE, SIZE);
+                            // context.strokeRect(center.x, center.y, SIZE, SIZE);
+                            context.drawImage(floor, center.x, center.y, SIZE, SIZE);
+                            // context.beginPath();
+                            // context.arc(center.x + SIZE / 2, center.y + SIZE / 2, SIZE / 6, 0, 2 * Math.PI); // circle
+                            // context.fillStyle = "#523b2f"; //color
+                            // context.fill();
+                            context.drawImage(g_2, center.x, center.y, SIZE, SIZE);
 
-                    } else if (board[i][j] === 7) {
-                        // context.strokeStyle = "0";
-                        context.fillStyle = "#000000";
-                        context.fillRect(center.x, center.y, SIZE, SIZE);
-                        // context.strokeRect(center.x, center.y, SIZE, SIZE);
-                        context.drawImage(floor, center.x, center.y, SIZE, SIZE);
-                        // context.beginPath();
-                        // context.arc(center.x + SIZE / 2, center.y + SIZE / 2, SIZE / 6, 0, 2 * Math.PI); // circle
-                        // context.fillStyle = "#ca170f"; //color
-                        // context.fill();
-                        context.drawImage(g_3, center.x, center.y, SIZE, SIZE);
+                        } else if (board[i][j] === 7) {
+                            // context.strokeStyle = "0";
+                            context.fillStyle = "#000000";
+                            context.fillRect(center.x, center.y, SIZE, SIZE);
+                            // context.strokeRect(center.x, center.y, SIZE, SIZE);
+                            context.drawImage(floor, center.x, center.y, SIZE, SIZE);
+                            // context.beginPath();
+                            // context.arc(center.x + SIZE / 2, center.y + SIZE / 2, SIZE / 6, 0, 2 * Math.PI); // circle
+                            // context.fillStyle = "#ca170f"; //color
+                            // context.fill();
+                            context.drawImage(g_3, center.x, center.y, SIZE, SIZE);
 
 
-                    } else if (board[i][j] === 10) {
-                        // context.strokeStyle = "0";
-                        context.fillStyle = "#000000";
-                        context.fillRect(center.x, center.y, SIZE, SIZE);
-                        context.drawImage(floor, center.x, center.y, SIZE, SIZE);
-                        context.drawImage(skullFig, center.x, center.y, SIZE, SIZE);
-
-                    }
-                    if (board[i][j] === 0) {
-                        context.drawImage(floor, center.x, center.y, SIZE, SIZE);
-
-                    }
-                    if (ballsTheme !== "regular") {
-                        var image;
-                        if (ballsTheme === "bloody") {
-                            if (board[i][j] !== 4) {
-                                image = context.getImageData(center.x, center.y, SIZE, SIZE);
-                                bloodyColors(image.data);
-                                context.putImageData(image, center.x, center.y);
-                            }
-                        } else if (ballsTheme === "spooky") {
-                            if (board[i][j] !== 4) {
-                                image = context.getImageData(center.x, center.y, SIZE, SIZE);
-                                invertColors(image.data);
-                                context.putImageData(image, center.x, center.y);
-                            }
+                        } else if (board[i][j] === 10) {
+                            // context.strokeStyle = "0";
+                            context.fillStyle = "#000000";
+                            context.fillRect(center.x, center.y, SIZE, SIZE);
+                            context.drawImage(floor, center.x, center.y, SIZE, SIZE);
+                            context.drawImage(skullFig, center.x, center.y, SIZE, SIZE);
 
                         }
+                        if (board[i][j] === 0) {
+                            context.drawImage(floor, center.x, center.y, SIZE, SIZE);
+
+                        }
+                        if (ballsTheme !== "regular") {
+                            var image;
+                            if (ballsTheme === "bloody") {
+                                if (board[i][j] !== 4) {
+                                    image = context.getImageData(center.x, center.y, SIZE, SIZE);
+                                    bloodyColors(image.data);
+                                    context.putImageData(image, center.x, center.y);
+                                }
+                            } else if (ballsTheme === "spooky") {
+                                if (board[i][j] !== 4) {
+                                    image = context.getImageData(center.x, center.y, SIZE, SIZE);
+                                    invertColors(image.data);
+                                    context.putImageData(image, center.x, center.y);
+                                }
+
+                            }
+                        }
                     }
-                }
-                if (gameCompleted === 1) {
-                    context.drawImage(victoryFig, 80, 80, 450, 450);
-                }
-                if (gameOverIndication === 1) {
-                    if (score < 150) {
-                        context.drawImage(canDoBetter, 80, 80, 450, 450);
-                    } else {
-                        context.drawImage(gameOverFig, 80, 80, 450, 450);
+                    if (gameCompleted === 1) {
+                        context.drawImage(victoryFig, 80, 80, 450, 450);
+                    }
+                    if (gameOverIndication === 1) {
+                        if (score < 150) {
+                            context.drawImage(canDoBetter, 80, 80, 450, 450);
+                        } else {
+                            context.drawImage(gameOverFig, 80, 80, 450, 450);
+                        }
+
+                    }
+                    var time_now = new Date();
+                    if (starter !== 0 && time_now - respan_time > 1000) {
+                        starter--;
+                        respan_time = new Date();
+                    }
+                    if (starter !== 0) {
+                        if (starter === 3) {
+                            context.drawImage(num3, 80, 80, 450, 450);
+                        } else if (starter === 2) {
+                            context.drawImage(num2, 80, 80, 450, 450);
+                        } else if (starter === 1) {
+                            context.drawImage(num1, 80, 80, 450, 450);
+                        }
                     }
 
                 }
-                var time_now = new Date();
-                if (starter !== 0 && time_now - respan_time > 1000) {
-                    starter--;
-                    respan_time = new Date();
-                }
-                if (starter !== 0) {
-                    if (starter === 3) {
-                        context.drawImage(num3, 80, 80, 450, 450);
-                    } else if (starter === 2) {
-                        context.drawImage(num2, 80, 80, 450, 450);
-                    } else if (starter === 1) {
-                        context.drawImage(num1, 80, 80, 450, 450);
-                    }
-                }
-
             }
         }
 
@@ -1589,7 +1669,7 @@
                     window.clearInterval(interval);
                     gameStoped = 1;
                     gameCompleted = 1;
-                    Draw();
+                    // Draw();
                     // wait(500);
                     // window.alert("Game completed");
                 }
@@ -1621,14 +1701,11 @@
                     lblScore.value = score;
                     backgroundMusic.stop();
                     gameOverSound.play();
-                    Draw();
+                    // Draw();
                     // window.alert("Game Over");
-                } else {
-                    Draw();
                 }
-            } else {
-                Draw();
             }
+            Draw();
         }
 
 
